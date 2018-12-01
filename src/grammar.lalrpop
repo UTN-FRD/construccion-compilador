@@ -22,4 +22,5 @@ pub Atom: Atom = {
     <s:r"[A-Za-z]([0-9A-Za-z])*"> => Atom::Id(s.to_string()),
     //TODO commas
     <s:r"[0-9]+"> => Atom::Num(f64::from_str(s).unwrap()),
+    //TODO strings!
 }

@@ -14,11 +14,11 @@ mod lisp_type;
 #[test]
 fn test() {
     let _ = env_logger::try_init();
-    let parser = grammar::ExprParser::new();
-    let result = parser.parse("(+ 1 2)");
+    let parser = grammar::ProgramParser::new();
+    let result = parser.parse("(+ 1 2) (+ 3 2)");
     println!("{:?}", result);
     assert!(result.is_ok());
 
-    let result = eval::eval_expression(&result.unwrap());
+    let result = eval::eval_program(&result.unwrap());
     println!("{:?}", result);
 }
