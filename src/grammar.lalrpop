@@ -1,0 +1,25 @@
+use std::str::FromStr;
+use ast::{Expr, Atom, Op};
+
+grammar;
+
+pub Program: Vec<Expr> = {
+    Expr*
+}
+
+pub Expr: Expr = {
+    "(" <l:List> ")" => Expr::List(l),
+    <a:Atom> => Expr::Atom(a),
+};
+
+pub List: Vec<Expr> = {
+    Expr*
+}
+
+pub Atom: Atom = {
+    "+" => Atom::Op(Op::Add),
+    "-" => Atom::Op(Op::Sub),
+    <s:r"[A-Za-z]([0-9A-Za-z])*"> => Atom::Id(s.to_string()),
+    //TODO commas
+    <s:r"[0-9]+"> => Atom::Num(f64::from_str(s).unwrap()),
+}
