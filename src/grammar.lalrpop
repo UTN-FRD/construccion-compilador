@@ -1,5 +1,5 @@
 use std::str::FromStr;
-use ast::{Expr, Atom, Op};
+use ast::{Expr, Atom};
 
 grammar;
 
@@ -17,8 +17,8 @@ pub List: Vec<Expr> = {
 }
 
 pub Atom: Atom = {
-    "+" => Atom::Op(Op::Add),
-    "-" => Atom::Op(Op::Sub),
+    "+" => Atom::Id("+".to_string()),
+    "-" => Atom::Id("-".to_string()),
     <s:r"[A-Za-z]([0-9A-Za-z])*"> => Atom::Id(s.to_string()),
     //TODO commas
     <s:r"[0-9]+"> => Atom::Num(f64::from_str(s).unwrap()),

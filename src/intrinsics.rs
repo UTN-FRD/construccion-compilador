@@ -1,9 +1,11 @@
-use lisp_type::LispType;
+use std::rc::Rc;
 
-pub fn add(arguments: &Vec<LispType>) -> LispType {
+use lisp_value::LispValue;
+
+pub fn add(arguments: &Vec<Rc<LispValue>>) -> Rc<LispValue> {
     let res = arguments
         .iter()
         .fold(0f64, |acc, x| acc + x.unwrap_number());
 
-    return LispType::Num(res);
+    return Rc::new(LispValue::Num(res));
 }

@@ -6,10 +6,13 @@ extern crate env_logger;
 extern crate lalrpop_util;
 lalrpop_mod!(pub grammar); // synthesized by LALRPOP
 
+use std::rc::Rc;
+
 mod ast;
+mod env;
 mod eval;
 mod intrinsics;
-mod lisp_type;
+mod lisp_value;
 
 #[test]
 fn test() {
@@ -19,6 +22,7 @@ fn test() {
     println!("{:?}", result);
     assert!(result.is_ok());
 
-    let result = eval::eval_program(&result.unwrap());
+    let global_env = Rc::new(env::Env::new_global());
+    let result = eval::eval_program(&result.unwrap(), global_env);
     println!("{:?}", result);
 }

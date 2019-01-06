@@ -11,4 +11,3 @@ lalrpop-util = "0.16.2"
 regex = "0.2.1"
 log = "0.4.6"
 env_logger = "*"
-
