@@ -9,9 +9,12 @@ use eval::eval_expression;
 #[derive(Clone)]
 pub enum LispValue {
     None,
+    Reserved(String),
+    Id(String),
     Num(f64),
     // TODO rename to intrinsics
     Intrinsic(fn(&Vec<Rc<LispValue>>) -> Rc<LispValue>),
+    Func(Func),
 }
 
 impl LispValue {
@@ -33,13 +36,17 @@ impl fmt::Debug for LispValue {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             LispValue::None => write!(f, "Nill"),
-            LispValue::Intrinsic(_) => write!(f, "Fn"),
+            LispValue::Intrinsic(_) => write!(f, "intrinsic"),
+            LispValue::Func(_) => write!(f, "#func"),
             LispValue::Num(num) => write!(f, "{}", num),
+            LispValue::Id(str) => write!(f, "{}", str),
+            LispValue::Reserved(str) => write!(f, "{}", str),
             _ => panic!("asdasd"),
         }
     }
 }
 
+//TODO make this func save their name for later debugging
 #[derive(Clone)]
 pub struct Func {
     arg_names: Vec<String>,
@@ -59,7 +66,7 @@ impl Func {
     pub fn call(&self, arg_values: Vec<Rc<LispValue>>) -> Rc<LispValue> {
         let localEnv: HashMap<String, Rc<LispValue>> =
             self.arg_names.clone().into_iter().zip(arg_values).collect();
-        let env = Rc::new(Env::new(self.env.clone(), localEnv));
+        let env = Rc::new(self.env.new(self.env.clone(), localEnv));
 
         return eval_expression(&self.body, env);
     }

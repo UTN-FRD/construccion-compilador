@@ -17,12 +17,26 @@ mod lisp_value;
 #[test]
 fn test() {
     let _ = env_logger::try_init();
-    let parser = grammar::ProgramParser::new();
-    let result = parser.parse("(+ 1 2) (+ 3 2)");
-    println!("{:?}", result);
-    assert!(result.is_ok());
 
-    let global_env = Rc::new(env::Env::new_global());
-    let result = eval::eval_program(&result.unwrap(), global_env);
-    println!("{:?}", result);
+    fn test_case(source: &str) -> Vec<Rc<lisp_value::LispValue>> {
+        // PARSE
+        let parser = grammar::ProgramParser::new();
+        let result = parser.parse(source);
+        println!("{:?}", result);
+        assert!(result.is_ok());
+
+        // Eval
+        let global_env = Rc::new(env::Env::new_global());
+        let result = eval::eval_program(&result.unwrap(), global_env.clone());
+        println!("{:?}", result);
+        println!("{:#?}", global_env);
+
+        return result;
+    }
+
+    let sources = vec!["(+ 1 2) (+ 3 2)", "(define (myFn x) (+ x 2))"];
+
+    for source in &sources {
+        test_case(source);
+    }
 }
