@@ -7,6 +7,19 @@ pub Program: Vec<Expr> = {
     Expr*
 }
 
+// If I ever move define calls into the syntactic anaylser
+// these are the rules we should follow
+// https://docs.racket-lang.org/guide/syntax-overview.html#%28part._local-binding-intro%29
+//
+// For now we are using a much simpler form
+// TODO eventually we will want to dicover syntactically the following constructs
+// (define (myFn ...args) body)
+// (define varName varValue)
+// (let ([varName varValue]+) expr)
+// And probably more
+//
+// This will make the semantic side of the code (the eval)
+// much more easy and simpler
 pub Expr: Expr = {
     "(" <l:List> ")" => Expr::List(l),
     <a:Atom> => Expr::Atom(a),
