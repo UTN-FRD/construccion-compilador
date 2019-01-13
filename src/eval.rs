@@ -106,7 +106,7 @@ pub fn eval_define_function(
     env: Rc<Env>,
 ) -> Rc<LispValue> {
     let func = Func::new(fn_name, arg_names, body, env.clone());
-    env.set_global(func.get_name().clone(), Rc::new(LispValue::Func(func)));
+    env.set(func.get_name().clone(), Rc::new(LispValue::Func(func)));
 
     return Rc::new(LispValue::None);
 }
