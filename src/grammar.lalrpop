@@ -21,11 +21,11 @@ pub Program: Vec<Expr> = {
 // This will make the semantic side of the code (the eval)
 // much more easy and simpler
 pub Expr: Expr = {
-    "(" "define" "(" <fn_name: FnName> <arg_names: ArgName*> ")" <body: Expr+> ")" => {
+    "(" "define" "(" <fn_name: Id> <arg_names: Id*> ")" <body: Expr+> ")" => {
         Expr::DefineFunction(fn_name, arg_names, body)
     },
 
-    "(" "define" <var_name: VarName> <var_value: Expr> ")" => {
+    "(" "define" <var_name: Id> <var_value: Expr> ")" => {
         Expr::DefineVariable(var_name, Box::new(var_value))
     },
 
@@ -37,17 +37,14 @@ pub List: Vec<Expr> = {
     Expr*
 }
 
-//TODO unify the ID definition and also make it much flexible,
-//it shoul accept names-like-this?
 pub Atom: Atom = {
-    "+" => Atom::Id("+".to_string()),
-    "-" => Atom::Id("-".to_string()),
-    <s:r"[A-Za-z]([0-9A-Za-z])*"> => Atom::Id(s.to_string()),
-    //TODO commas
-    <s:r"[0-9]+"> => Atom::Num(f64::from_str(s).unwrap()),
+    <s:Op> => Atom::Id(s),
     //TODO strings!
+    //TODO commas
+    <s:Number> => Atom::Num(s),
+    <s:Id> => Atom::Id(s),
 }
 
-pub FnName: String = <s:r"[A-Za-z]([0-9A-Za-z])*"> => s.to_string();
-pub ArgName: String =  <s:r"[A-Za-z]([0-9A-Za-z])*"> => s.to_string();
-pub VarName: String  =  <s:r"[A-Za-z]([0-9A-Za-z])*"> => s.to_string();
+Op: String = <s:r"[+\-*/=]"> => s.to_string();
+Id: String = <s:r"[[:alpha:]][\d\w\-_]*\??"> => s.to_string();
+Number: f64 =  <s:r"[0-9]+"> => f64::from_str(s).unwrap();
