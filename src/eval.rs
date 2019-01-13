@@ -13,9 +13,9 @@ pub fn eval_program(program: &Vec<Expr>, env: Rc<Env>) -> Vec<Rc<LispValue>> {
         .map(|child| eval_expression(child, env.clone()))
         .collect();
 
-    for res in &result {
-        println!("RESULT {:?}", res)
-    }
+    //for res in &result {
+    //println!("RESULT {:?}", res)
+    //}
 
     debug!("eval_program END");
     return result;
@@ -56,29 +56,38 @@ pub fn eval_list(list: &Vec<Expr>, env: Rc<Env>) -> Rc<LispValue> {
                         if list[0].is_list() {
                             // We are defining a func
                             let func = Func::from_expr(list.clone(), env.clone());
-                            env.set_global(func.get_name().to_string(), Rc::new(LispValue::Func(func)));
+                            env.set_global(
+                                func.get_name().to_string(),
+                                Rc::new(LispValue::Func(func)),
+                            );
 
-                            return Rc::new(LispValue::None)
+                            return Rc::new(LispValue::None);
                         } else {
                             // we are defining a variable
                             //TODO
-                            return Rc::new(LispValue::None)
+                            return Rc::new(LispValue::None);
                         }
                     }
                     _ => {
                         let func = env.get(id).expect("Symbol not found");
-                        let arguments: Vec<Rc<LispValue>> = list
+                        let arg_values: Vec<Rc<LispValue>> = list
                             .iter()
                             .map(|child| eval_expression(child, env.clone()))
                             .collect();
 
-                        //TODO handle Func types
-                        if let LispValue::Intrinsic(func) = *func {
-                            let res = func(&arguments);
-                            debug!("eval_list END");
-                            return res;
-                        } else {
-                            panic!("MOFO")
+                        match *func {
+                            LispValue::Intrinsic(ref func) => {
+                                let res = func(&arg_values);
+                                debug!("eval_list END");
+                                return res;
+                            }
+
+                            LispValue::Func(ref func) => {
+                                let res = func.call(arg_values);
+                                debug!("eval_list END");
+                                return res;
+                            }
+                            _ => panic!("Unexpected Value in the Function name position"),
                         }
                     }
                 }
@@ -103,7 +112,7 @@ pub fn eval_atom(atom: &Atom, env: Rc<Env>) -> Rc<LispValue> {
         // this should print something like `#func`
         Atom::Id(id) => match id.as_str() {
             "define" => Rc::new(LispValue::Reserved(id.to_string())),
-            _ => Rc::new(LispValue::Id(id.to_string())),
+            _ => env.get(id).expect("Symbol not found"),
         },
     }
 }

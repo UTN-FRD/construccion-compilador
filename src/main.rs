@@ -19,22 +19,27 @@ fn test() {
     let _ = env_logger::try_init();
 
     fn test_case(source: &str) -> Vec<Rc<lisp_value::LispValue>> {
+        println!("SOURCE {:?}", source);
         // PARSE
         let parser = grammar::ProgramParser::new();
         let result = parser.parse(source);
-        println!("{:?}", result);
+        println!("AST {:?}", result);
         assert!(result.is_ok());
 
         // Eval
         let global_env = Rc::new(env::Env::new_global());
         let result = eval::eval_program(&result.unwrap(), global_env.clone());
-        println!("{:?}", result);
-        println!("{:#?}", global_env);
+        println!("RESULT {:?}", result);
+        println!("GLOBAL ENV {:#?}", global_env);
 
         return result;
     }
 
-    let sources = vec!["(+ 1 2) (+ 3 2)", "(define (myFn x) (+ x 2))"];
+    let sources = vec![
+        "(+ 1 2) (+ 3 2)",
+        "(define (myFn x) (+ x 2))",
+        "(define (myFn x) (+ x 2)) (myFn 4)",
+    ];
 
     for source in &sources {
         test_case(source);
