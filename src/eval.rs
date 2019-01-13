@@ -38,6 +38,11 @@ pub fn eval_expression(expression: &Expr, env: Rc<Env>) -> Rc<LispValue> {
             debug!("eval_expression END");
             return eval_define_function(fn_name.clone(), arg_names.clone(), body.clone(), env);
         }
+
+        Expr::DefineVariable(name, value) => {
+            debug!("eval_expression END");
+            return eval_define_variable(name, value, env);
+        }
     }
 }
 
@@ -52,52 +57,29 @@ pub fn eval_list(list: &Vec<Expr>, env: Rc<Env>) -> Rc<LispValue> {
     let first = list.remove(0);
 
     match first {
-        Expr::Atom(ref atom) => match atom {
-            //TODO maybe expect_atom ?
-            Atom::Id(ref id) => {
-                match id.as_str() {
-                    //"define" => {
-                        //if list[0].is_list() {
-                            //// We are defining a func
-                            //let func = Func::from_expr(list.clone(), env.clone());
-                            //env.set_global(
-                                //func.get_name().to_string(),
-                                //Rc::new(LispValue::Func(func)),
-                            //);
+        Expr::Atom(atom) => {
+            let id = atom.expect_id("Unexpected non id");
+            let func = env.get(&id).expect("Symbol not found");
+            let arg_values: Vec<Rc<LispValue>> = list
+                .iter()
+                .map(|expr| eval_expression(expr, env.clone()))
+                .collect();
 
-                            //return Rc::new(LispValue::None);
-                        //} else {
-                            //// we are defining a variable
-                            ////TODO
-                            //return Rc::new(LispValue::None);
-                        //}
-                    //}
-                    _ => {
-                        let func = env.get(id).expect("Symbol not found");
-                        let arg_values: Vec<Rc<LispValue>> = list
-                            .iter()
-                            .map(|expr| eval_expression(expr, env.clone()))
-                            .collect();
-
-                        match *func {
-                            LispValue::Intrinsic(ref func) => {
-                                let res = func(&arg_values);
-                                debug!("eval_list END");
-                                return res;
-                            }
-
-                            LispValue::Func(ref func) => {
-                                let res = func.call(arg_values);
-                                debug!("eval_list END");
-                                return res;
-                            }
-                            _ => panic!("Unexpected Value in the Function name position"),
-                        }
-                    }
+            match *func {
+                LispValue::Intrinsic(ref func) => {
+                    let res = func(&arg_values);
+                    debug!("eval_list END");
+                    return res;
                 }
+
+                LispValue::Func(ref func) => {
+                    let res = func.call(arg_values);
+                    debug!("eval_list END");
+                    return res;
+                }
+                _ => panic!("Unexpected Value in the Function name position"),
             }
-            _ => panic!("Unexpected Atom type"),
-        },
+        }
         //Expr::List(ref list) =>  {
         // evaluate the first element as a list, check what it evaluates to
         // and do something
@@ -112,7 +94,7 @@ pub fn eval_atom(atom: &Atom, env: Rc<Env>) -> Rc<LispValue> {
     match atom {
         Atom::Num(num) => Rc::new(LispValue::Num(*num)),
         Atom::Id(id) => match id.as_str() {
-            _ => env.get(&id).expect("Symbol not found"),
+            _ => env.get(&id).expect(&format!("Symbol {} not found", id)),
         },
     }
 }
@@ -125,6 +107,13 @@ pub fn eval_define_function(
 ) -> Rc<LispValue> {
     let func = Func::new(fn_name, arg_names, body, env.clone());
     env.set_global(func.get_name().clone(), Rc::new(LispValue::Func(func)));
+
+    return Rc::new(LispValue::None);
+}
+
+pub fn eval_define_variable(var_name: &String, var_value: &Expr, env: Rc<Env>) -> Rc<LispValue> {
+    let value = eval_expression(var_value, env.clone());
+    env.set(var_name.clone(), value);
 
     return Rc::new(LispValue::None);
 }

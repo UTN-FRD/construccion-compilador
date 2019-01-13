@@ -39,6 +39,7 @@ fn test() {
         "(+ 1 2) (+ 3 2)",
         "(define (myFn x) (+ x 2))",
         "(define (myFn x) (+ x 2)) (myFn 4)",
+        "(define myVar (+ 3 2))",
     ];
 
     for source in &sources {

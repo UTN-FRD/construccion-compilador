@@ -4,6 +4,8 @@ pub enum Expr {
     Atom(Atom),
     // fn_name, arg_names, body
     DefineFunction(String, Vec<String>, Vec<Expr>),
+    // var_value, var_name
+    DefineVariable(String, Box<Expr>),
 }
 
 impl Expr {

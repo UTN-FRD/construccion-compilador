@@ -24,6 +24,11 @@ pub Expr: Expr = {
     "(" "define" "(" <fn_name: FnName> <arg_names: ArgName*> ")" <body: Expr+> ")" => {
         Expr::DefineFunction(fn_name, arg_names, body)
     },
+
+    "(" "define" <var_name: VarName> <var_value: Expr> ")" => {
+        Expr::DefineVariable(var_name, Box::new(var_value))
+    },
+
     "(" <l:List> ")" => Expr::List(l),
     <a:Atom> => Expr::Atom(a),
 };
@@ -44,5 +49,5 @@ pub Atom: Atom = {
 }
 
 pub FnName: String = <s:r"[A-Za-z]([0-9A-Za-z])*"> => s.to_string();
-
 pub ArgName: String =  <s:r"[A-Za-z]([0-9A-Za-z])*"> => s.to_string();
+pub VarName: String  =  <s:r"[A-Za-z]([0-9A-Za-z])*"> => s.to_string();
