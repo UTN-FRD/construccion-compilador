@@ -59,7 +59,7 @@ impl Env {
 
     pub fn set_global(&self, key: String, value: Rc<LispValue>) {
         // This is the global env
-        if (self.root.is_none()) {
+        if self.root.is_none() {
             self.set(key, value);
             return;
         }

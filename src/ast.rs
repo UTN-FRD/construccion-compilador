@@ -19,17 +19,17 @@ impl Expr {
         }
     }
 
-    pub fn unwrap_atom(self) -> Atom {
+    pub fn expect_atom(self, error_message: &str) -> Atom {
         match self {
             Expr::Atom(atom) => return atom,
-            _ => panic!("ASDASD"),
+            _ => panic!("{}", error_message),
         }
     }
 
-    pub fn unwrap_list(self) -> Vec<Expr> {
+    pub fn expect_list(self, error_message: &str) -> Vec<Expr> {
         match self {
             Expr::List(list) => return list,
-            _ => panic!("ASDASD"),
+            _ => panic!("{}", error_message),
         }
     }
 }
@@ -41,10 +41,10 @@ pub enum Atom {
 }
 
 impl Atom {
-    pub fn unwrap_id(self) -> String {
+    pub fn expect_id(self, error_message: &str) -> String {
         match self {
             Atom::Id(id) => return id,
-            _ => panic!("ASDKJAHSD"),
+            _ => panic!("{}", error_message),
         }
     }
 }

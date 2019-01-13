@@ -49,37 +49,21 @@ pub fn eval_list(list: &Vec<Expr>, env: Rc<Env>) -> Rc<LispValue> {
 
     match first {
         Expr::Atom(ref atom) => match atom {
+            //TODO maybe expect_atom ?
             Atom::Id(ref id) => {
                 match id.as_str() {
                     "define" => {
-                        // TODO refactor
-                        let mut parts = list.clone();
-                        assert!(
-                            parts.len() == 2,
-                            "Wrong number of arguments to create a function"
-                        );
-                        let signature = parts.remove(0);
-                        let body = parts.remove(0);
+                        if list[0].is_list() {
+                            // We are defining a func
+                            let func = Func::from_expr(list.clone(), env.clone());
+                            env.set_global(func.get_name().to_string(), Rc::new(LispValue::Func(func)));
 
-                        assert!(signature.is_list());
-                        let mut signature = signature.unwrap_list();
-                        assert!(signature.len() >= 1, "Missing function name");
-
-                        let fn_name = signature.remove(0);
-                        assert!(fn_name.is_atom());
-                        //TODO replace these with expect atom and expect id
-                        let fn_name = fn_name.unwrap_atom().unwrap_id();
-                        let arg_names: Vec<String> = signature
-                            .into_iter()
-                            .map(|name| {
-                                assert!(name.is_atom());
-                                return name.unwrap_atom().unwrap_id();
-                            }).collect();
-
-                        let func = Func::new(arg_names, body, env.clone());
-                        env.set_global(fn_name, Rc::new(LispValue::Func(func)));
-
-                        Rc::new(LispValue::None)
+                            return Rc::new(LispValue::None)
+                        } else {
+                            // we are defining a variable
+                            //TODO
+                            return Rc::new(LispValue::None)
+                        }
                     }
                     _ => {
                         let func = env.get(id).expect("Symbol not found");
