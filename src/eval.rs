@@ -1,4 +1,4 @@
-use lisp_value::{Func, LispValue};
+use lisp_value::{Func, Bool, LispValue};
 use std::rc::Rc;
 
 use ast::{Atom, Expr};
@@ -59,7 +59,7 @@ pub fn eval_list(list: &Vec<Expr>, env: Rc<Env>) -> Rc<LispValue> {
     match first {
         Expr::Atom(atom) => {
             let id = atom.expect_id("Unexpected non id");
-            let func = env.get(&id).expect("Symbol not found");
+            let func = env.get(&id).expect(&format!("Symbol `{}` not found", id));
             let arg_values: Vec<Rc<LispValue>> = list
                 .iter()
                 .map(|expr| eval_expression(expr, env.clone()))
@@ -94,6 +94,8 @@ pub fn eval_atom(atom: &Atom, env: Rc<Env>) -> Rc<LispValue> {
     match atom {
         Atom::Num(num) => Rc::new(LispValue::Num(*num)),
         Atom::Id(id) => match id.as_str() {
+            "true" => Rc::new(LispValue::Bool(Bool::True)),
+            "false" => Rc::new(LispValue::Bool(Bool::False)),
             _ => env.get(&id).expect(&format!("Symbol {} not found", id)),
         },
     }

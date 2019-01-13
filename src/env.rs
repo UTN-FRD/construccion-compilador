@@ -21,6 +21,10 @@ impl Env {
             "+".to_string(),
             Rc::new(LispValue::Intrinsic(intrinsics::add)),
         );
+        env.insert(
+            "=".to_string(),
+            Rc::new(LispValue::Intrinsic(intrinsics::eq)),
+        );
 
         Env {
             root: None,

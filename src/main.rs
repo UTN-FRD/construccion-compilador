@@ -37,6 +37,7 @@ fn test() {
 
     let sources = vec![
         "(+ 1 2) (+ 3 2)",
+        "(= true true)",
         "(define (myFn x) (+ x 2))",
         "(define (myFn x) (+ x 2)) (myFn 4)",
         "(define (my-fn-2? x) (+ x 2))",

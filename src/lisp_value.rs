@@ -11,7 +11,7 @@ pub enum LispValue {
     None,
     Id(String),
     Num(f64),
-    // TODO rename to intrinsics
+    Bool(Bool),
     Intrinsic(fn(&Vec<Rc<LispValue>>) -> Rc<LispValue>),
     Func(Func),
 }
@@ -23,12 +23,19 @@ impl LispValue {
             _ => panic!("BBBB"),
         }
     }
-    //pub fn unwrap_fn(self) -> fn(&Vec<Rc<LispValue>>) -> Rc<LispValue> {
-    //match self {
-    //LispValue::Fn(function) => return function,
-    //_ => panic!("BBBB"),
-    //}
-    //}
+}
+
+impl PartialEq for LispValue {
+    fn eq(&self, other: &LispValue) -> bool {
+        use self::LispValue::*;
+
+        match (self, other) {
+            (LispValue::None, LispValue::None) => return true,
+            (Id(ref id1), Id(ref id2)) => return *id1 == *id2,
+            (Bool(ref bool1), Bool(ref bool2)) => return bool1 == bool2,
+            _ => return false,
+        }
+    }
 }
 
 impl fmt::Debug for LispValue {
@@ -39,9 +46,18 @@ impl fmt::Debug for LispValue {
             LispValue::Func(func) => write!(f, "#func {}", func.get_name()),
             LispValue::Num(num) => write!(f, "{}", num),
             LispValue::Id(str) => write!(f, "{}", str),
-            _ => panic!("asdasd"),
+            LispValue::Bool(lisp_bool) => match lisp_bool {
+                Bool::True => write!(f, "true"),
+                Bool::False => write!(f, "false"),
+            }
         }
     }
+}
+
+#[derive(Clone, PartialEq, Eq)]
+pub enum Bool {
+    True,
+    False,
 }
 
 #[derive(Clone)]
