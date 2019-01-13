@@ -10,6 +10,7 @@ use eval::eval_expression;
 pub enum LispValue {
     None,
     Id(String),
+    //TODO support Int and Float
     Num(f64),
     Bool(Bool),
     Intrinsic(fn(&Vec<Rc<LispValue>>) -> Rc<LispValue>),
@@ -49,7 +50,7 @@ impl fmt::Debug for LispValue {
             LispValue::Bool(lisp_bool) => match lisp_bool {
                 Bool::True => write!(f, "true"),
                 Bool::False => write!(f, "false"),
-            }
+            },
         }
     }
 }

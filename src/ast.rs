@@ -6,6 +6,8 @@ pub enum Expr {
     DefineFunction(String, Vec<String>, Vec<Expr>),
     // var_value, var_name
     DefineVariable(String, Box<Expr>),
+    // cond, then, else
+    If(Box<Expr>, Box<Expr>, Box<Option<Expr>>),
 }
 
 impl Expr {

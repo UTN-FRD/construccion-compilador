@@ -1,4 +1,4 @@
-use lisp_value::{Func, Bool, LispValue};
+use lisp_value::{Bool, Func, LispValue};
 use std::rc::Rc;
 
 use ast::{Atom, Expr};
@@ -23,27 +23,22 @@ pub fn eval_program(program: &Vec<Expr>, env: Rc<Env>) -> Vec<Rc<LispValue>> {
 pub fn eval_expression(expression: &Expr, env: Rc<Env>) -> Rc<LispValue> {
     debug!("eval_expression {:?}", expression);
 
-    match expression {
-        Expr::List(list) => {
-            debug!("eval_expression END");
-            return eval_list(list, env);
-        }
+    let result = match expression {
+        Expr::List(list) => eval_list(list, env),
 
-        Expr::Atom(atom) => {
-            debug!("eval_expression END");
-            return eval_atom(atom, env);
-        }
+        Expr::Atom(atom) => eval_atom(atom, env),
 
         Expr::DefineFunction(fn_name, arg_names, body) => {
-            debug!("eval_expression END");
-            return eval_define_function(fn_name.clone(), arg_names.clone(), body.clone(), env);
+            eval_define_function(fn_name.clone(), arg_names.clone(), body.clone(), env)
         }
 
-        Expr::DefineVariable(name, value) => {
-            debug!("eval_expression END");
-            return eval_define_variable(name, value, env);
-        }
-    }
+        Expr::DefineVariable(name, value) => eval_define_variable(name, value, env),
+
+        Expr::If(cond, positive, negative) => eval_if(cond, positive, negative, env),
+    };
+
+    debug!("eval_expression END");
+    return result;
 }
 
 pub fn eval_list(list: &Vec<Expr>, env: Rc<Env>) -> Rc<LispValue> {
@@ -118,6 +113,31 @@ pub fn eval_define_variable(var_name: &String, var_value: &Expr, env: Rc<Env>) -
     env.set(var_name.clone(), value);
 
     return Rc::new(LispValue::None);
+}
+
+pub fn eval_if(
+    cond: &Expr,
+    positive: &Expr,
+    negative: &Option<Expr>,
+    env: Rc<Env>,
+) -> Rc<LispValue> {
+    let cond_value = eval_expression(cond, env.clone());
+    if let LispValue::Bool(ref value) = *cond_value {
+        match value {
+            Bool::True => {
+                return eval_expression(positive, env.clone());
+            }
+            Bool::False => {
+                if negative.is_none() {
+                    return Rc::new(LispValue::None);
+                }
+
+                return eval_expression(negative.as_ref().unwrap(), env.clone());
+            }
+        }
+    } else {
+        panic!("Still don't know how to coerce")
+    }
 }
 
 //#[cfg(test)]
