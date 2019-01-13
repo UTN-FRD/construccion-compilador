@@ -21,6 +21,9 @@ pub Program: Vec<Expr> = {
 // This will make the semantic side of the code (the eval)
 // much more easy and simpler
 pub Expr: Expr = {
+    "(" "define" "(" <fn_name: FnName> <arg_names: ArgName*> ")" <body: Expr+> ")" => {
+        Expr::DefineFunction(fn_name, arg_names, body)
+    },
     "(" <l:List> ")" => Expr::List(l),
     <a:Atom> => Expr::Atom(a),
 };
@@ -29,6 +32,8 @@ pub List: Vec<Expr> = {
     Expr*
 }
 
+//TODO unify the ID definition and also make it much flexible,
+//it shoul accept names-like-this?
 pub Atom: Atom = {
     "+" => Atom::Id("+".to_string()),
     "-" => Atom::Id("-".to_string()),
@@ -37,3 +42,7 @@ pub Atom: Atom = {
     <s:r"[0-9]+"> => Atom::Num(f64::from_str(s).unwrap()),
     //TODO strings!
 }
+
+pub FnName: String = <s:r"[A-Za-z]([0-9A-Za-z])*"> => s.to_string();
+
+pub ArgName: String =  <s:r"[A-Za-z]([0-9A-Za-z])*"> => s.to_string();

@@ -2,6 +2,8 @@
 pub enum Expr {
     List(Vec<Expr>),
     Atom(Atom),
+    // fn_name, arg_names, body
+    DefineFunction(String, Vec<String>, Vec<Expr>),
 }
 
 impl Expr {

@@ -9,7 +9,6 @@ use eval::eval_expression;
 #[derive(Clone)]
 pub enum LispValue {
     None,
-    Reserved(String),
     Id(String),
     Num(f64),
     // TODO rename to intrinsics
@@ -40,23 +39,21 @@ impl fmt::Debug for LispValue {
             LispValue::Func(func) => write!(f, "#func {}", func.get_name()),
             LispValue::Num(num) => write!(f, "{}", num),
             LispValue::Id(str) => write!(f, "{}", str),
-            LispValue::Reserved(str) => write!(f, "{}", str),
             _ => panic!("asdasd"),
         }
     }
 }
 
-//TODO make this func save their name for later debugging
 #[derive(Clone)]
 pub struct Func {
     name: String,
     arg_names: Vec<String>,
-    body: Expr,
+    body: Vec<Expr>,
     env: Rc<Env>,
 }
 
 impl Func {
-    pub fn new(name: String, arg_names: Vec<String>, body: Expr, env: Rc<Env>) -> Func {
+    pub fn new(name: String, arg_names: Vec<String>, body: Vec<Expr>, env: Rc<Env>) -> Func {
         Func {
             name,
             arg_names,
@@ -71,36 +68,11 @@ impl Func {
 
         let env = Rc::new(self.env.new(self.env.clone(), local_env));
 
-        return eval_expression(&self.body, env);
+        // TODO evaluate multiple Expr bodies
+        return eval_expression(&self.body[0], env);
     }
 
     pub fn get_name(&self) -> &String {
         return &self.name;
-    }
-
-    pub fn from_expr(mut parts: Vec<Expr>, env: Rc<Env>) -> Func {
-        assert!(
-            parts.len() == 2,
-            "Wrong number of arguments to create a function"
-        );
-        let signature = parts.remove(0);
-        let body = parts.remove(0);
-
-        let mut signature = signature.expect_list("Define second element should be a list");
-        assert!(signature.len() >= 1, "Missing function name");
-
-        let fn_name = signature.remove(0);
-        let fn_name = fn_name
-            .expect_atom("Function name should be an atom")
-            .expect_id("Function name should be an id");
-        let arg_names: Vec<String> = signature
-            .into_iter()
-            .map(|name| {
-                name.expect_atom("Function args should be atoms")
-                    .expect_id("Function args should be ids")
-            }).collect();
-
-        let func = Func::new(fn_name, arg_names, body, env.clone());
-        return func;
     }
 }
