@@ -1,3 +1,12 @@
+//TODO
+//- create a proper debug infra with a better strucure
+//- probably we would want to generate an id for each function instance to see how they open and close
+//- better structure for what and how we log it, arguments, return values, env changes, etc
+//
+//
+//TODO
+//- instead of Panic! on every error it would nice to a hace Result infra
+//
 use lisp_value::{Bool, Func, LispValue};
 use std::rc::Rc;
 
