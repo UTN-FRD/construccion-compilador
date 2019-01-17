@@ -1,9 +1,9 @@
 [package]
-name = "lisp2018-lalrpop"
+name = "frd_lisp"
 version = "0.1.0"
 authors = ["Fran Guijarro <franleplant@gmail.com>"]
 
-[build-dependencies] # <-- We added this and everything after!
+[build-dependencies]
 lalrpop = "0.16.2"
 
 [dependencies]

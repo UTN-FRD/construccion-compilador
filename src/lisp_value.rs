@@ -1,3 +1,4 @@
+use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::fmt;
 use std::rc::Rc;
@@ -8,19 +9,18 @@ use eval::eval_expression;
 
 #[derive(Clone)]
 pub enum LispValue {
-    None,
+    Nill,
     Id(String),
-    //TODO support Int and Float
-    Num(f64),
+    Int(i64),
     Bool(Bool),
     Intrinsic(fn(&Vec<Rc<LispValue>>) -> Rc<LispValue>),
     Func(Func),
 }
 
 impl LispValue {
-    pub fn unwrap_number(&self) -> &f64 {
+    pub fn unwrap_number(&self) -> &i64 {
         match self {
-            LispValue::Num(ref num) => return num,
+            LispValue::Int(ref num) => return num,
             _ => panic!("BBBB"),
         }
     }
@@ -31,7 +31,8 @@ impl PartialEq for LispValue {
         use self::LispValue::*;
 
         match (self, other) {
-            (LispValue::None, LispValue::None) => return true,
+            (LispValue::Nill, LispValue::Nill) => return true,
+            (Int(ref n1), Int(ref n2)) => return n1 == n2,
             (Id(ref id1), Id(ref id2)) => return *id1 == *id2,
             (Bool(ref bool1), Bool(ref bool2)) => return bool1 == bool2,
             _ => return false,
@@ -39,13 +40,38 @@ impl PartialEq for LispValue {
     }
 }
 
+impl Eq for LispValue {}
+
+impl Ord for LispValue {
+    fn cmp(&self, other: &LispValue) -> Ordering {
+        use self::LispValue::*;
+
+        match (self, other) {
+            (Int(ref n1), Int(ref n2)) => return n1.cmp(n2),
+            // TODO is this the right thing to do?
+            _ => return Ordering::Equal,
+        }
+    }
+}
+
+impl PartialOrd for LispValue {
+    fn partial_cmp(&self, other: &LispValue) -> Option<Ordering> {
+        use self::LispValue::*;
+        match (self, other) {
+            (Int(ref n1), Int(ref n2)) => return Some(n1.cmp(n2)),
+            // TODO is this the right thing to do?
+            _ => return None,
+        }
+    }
+}
+
 impl fmt::Debug for LispValue {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            LispValue::None => write!(f, "Nill"),
+            LispValue::Nill => write!(f, "Nill"),
             LispValue::Intrinsic(_) => write!(f, "intrinsic"),
             LispValue::Func(func) => write!(f, "#func {}", func.get_name()),
-            LispValue::Num(num) => write!(f, "{}", num),
+            LispValue::Int(num) => write!(f, "{}", num),
             LispValue::Id(str) => write!(f, "{}", str),
             LispValue::Bool(lisp_bool) => match lisp_bool {
                 Bool::True => write!(f, "true"),
@@ -86,10 +112,33 @@ impl Func {
         let env = Rc::new(self.env.new(self.env.clone(), local_env));
 
         // TODO evaluate multiple Expr bodies
-        return eval_expression(&self.body[0], env);
+        let result = eval_expression(&self.body[0], env.clone());
+        debug!("func call {:?}", env);
+        debug!("func result {:?}", result);
+        return result;
     }
 
     pub fn get_name(&self) -> &String {
         return &self.name;
     }
 }
+
+impl Ord for Func {
+    fn cmp(&self, other: &Func) -> Ordering {
+        Ordering::Equal
+    }
+}
+
+impl PartialOrd for Func {
+    fn partial_cmp(&self, other: &Func) -> Option<Ordering> {
+        None
+    }
+}
+
+impl PartialEq for Func {
+    fn eq(&self, other: &Func) -> bool {
+        false
+    }
+}
+
+impl Eq for Func {}

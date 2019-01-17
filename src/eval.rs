@@ -1,8 +1,25 @@
 use lisp_value::{Bool, Func, LispValue};
 use std::rc::Rc;
 
+lalrpop_mod!(pub grammar); // synthesized by LALRPOP
+
 use ast::{Atom, Expr};
 use env::Env;
+
+pub fn eval(source: &str) -> Vec<Rc<LispValue>> {
+    debug!("eval {:?}", source);
+    let parser = grammar::ProgramParser::new();
+    let result = parser.parse(source);
+    assert!(result.is_ok(), "Syntax error {:?}", result);
+    debug!("ast {:?}", result);
+
+    let global_env = Rc::new(Env::new_global());
+    let result = eval_program(&result.unwrap(), global_env.clone());
+    debug!("env {:?}", global_env);
+    debug!("result {:?}", result);
+
+    return result;
+}
 
 pub fn eval_program(program: &Vec<Expr>, env: Rc<Env>) -> Vec<Rc<LispValue>> {
     debug!("eval {:?}", program);
@@ -37,14 +54,14 @@ pub fn eval_expression(expression: &Expr, env: Rc<Env>) -> Rc<LispValue> {
         Expr::If(cond, positive, negative) => eval_if(cond, positive, negative, env),
     };
 
-    debug!("eval_expression END");
+    debug!("eval_expression END {:?}", result);
     return result;
 }
 
 pub fn eval_list(list: &Vec<Expr>, env: Rc<Env>) -> Rc<LispValue> {
     debug!("eval_list {:?}", list);
     if list.len() == 0 {
-        return Rc::new(LispValue::None);
+        return Rc::new(LispValue::Nill);
     }
 
     //TODO
@@ -63,13 +80,13 @@ pub fn eval_list(list: &Vec<Expr>, env: Rc<Env>) -> Rc<LispValue> {
             match *func {
                 LispValue::Intrinsic(ref func) => {
                     let res = func(&arg_values);
-                    debug!("eval_list END");
+                    debug!("eval_list END Intrinsice {:?}", res);
                     return res;
                 }
 
                 LispValue::Func(ref func) => {
                     let res = func.call(arg_values);
-                    debug!("eval_list END");
+                    debug!("eval_list END FUNC {:?}", res);
                     return res;
                 }
                 _ => panic!("Unexpected Value in the Function name position"),
@@ -87,7 +104,7 @@ pub fn eval_list(list: &Vec<Expr>, env: Rc<Env>) -> Rc<LispValue> {
 pub fn eval_atom(atom: &Atom, env: Rc<Env>) -> Rc<LispValue> {
     debug!("eval_atom {:?}", atom);
     match atom {
-        Atom::Num(num) => Rc::new(LispValue::Num(*num)),
+        Atom::Int(num) => Rc::new(LispValue::Int(*num)),
         Atom::Id(id) => match id.as_str() {
             "true" => Rc::new(LispValue::Bool(Bool::True)),
             "false" => Rc::new(LispValue::Bool(Bool::False)),
@@ -105,14 +122,14 @@ pub fn eval_define_function(
     let func = Func::new(fn_name, arg_names, body, env.clone());
     env.set(func.get_name().clone(), Rc::new(LispValue::Func(func)));
 
-    return Rc::new(LispValue::None);
+    return Rc::new(LispValue::Nill);
 }
 
 pub fn eval_define_variable(var_name: &String, var_value: &Expr, env: Rc<Env>) -> Rc<LispValue> {
     let value = eval_expression(var_value, env.clone());
     env.set(var_name.clone(), value);
 
-    return Rc::new(LispValue::None);
+    return Rc::new(LispValue::Nill);
 }
 
 pub fn eval_if(
@@ -129,7 +146,7 @@ pub fn eval_if(
             }
             Bool::False => {
                 if negative.is_none() {
-                    return Rc::new(LispValue::None);
+                    return Rc::new(LispValue::Nill);
                 }
 
                 return eval_expression(negative.as_ref().unwrap(), env.clone());

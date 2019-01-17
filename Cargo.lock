@@ -145,6 +145,17 @@ version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
+name = "frd_lisp"
+version = "0.1.0"
+dependencies = [
+ "env_logger 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "lalrpop 0.16.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "lalrpop-util 0.16.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "log 0.4.6 (registry+https://github.com/rust-lang/crates.io-index)",
+ "regex 0.2.11 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "fuchsia-zircon"
 version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -229,17 +240,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "libc"
 version = "0.2.44"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-
-[[package]]
-name = "lisp2018-lalrpop"
-version = "0.1.0"
-dependencies = [
- "env_logger 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "lalrpop 0.16.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "lalrpop-util 0.16.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "log 0.4.6 (registry+https://github.com/rust-lang/crates.io-index)",
- "regex 0.2.11 (registry+https://github.com/rust-lang/crates.io-index)",
-]
 
 [[package]]
 name = "log"

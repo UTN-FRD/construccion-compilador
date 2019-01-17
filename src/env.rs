@@ -22,8 +22,20 @@ impl Env {
             Rc::new(LispValue::Intrinsic(intrinsics::add)),
         );
         env.insert(
+            "-".to_string(),
+            Rc::new(LispValue::Intrinsic(intrinsics::sub)),
+        );
+        env.insert(
             "=".to_string(),
             Rc::new(LispValue::Intrinsic(intrinsics::eq)),
+        );
+        env.insert(
+            ">".to_string(),
+            Rc::new(LispValue::Intrinsic(intrinsics::gt)),
+        );
+        env.insert(
+            "<".to_string(),
+            Rc::new(LispValue::Intrinsic(intrinsics::lt)),
         );
 
         Env {
