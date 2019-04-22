@@ -13,9 +13,10 @@ pub enum LispValue {
     Id(String),
     Int(i64),
     Bool(Bool),
-    Intrinsic(fn(&Vec<Rc<LispValue>>) -> Rc<LispValue>),
+    Intrinsic(fn(&[Rc<LispValue>]) -> Rc<LispValue>),
     Func(Func),
 }
+
 
 impl LispValue {
     pub fn unwrap_number(&self) -> &i64 {

@@ -8,6 +8,7 @@ Lisp written in Rust as part of a research project in UTN-FRD (Universidad Tecno
 Install
 - [Rust (latest stable), via Rustup is recommended](https://www.rust-lang.org/tools/install)
 - [rust fmt](https://github.com/rust-lang/rustfmt)
+- [rust clippy](https://github.com/rust-lang/rust-clippy)
 - git
 
 
@@ -25,6 +26,7 @@ or
 - PRs MUST have passing builds to be merged
 - be sure to auto format your code with `cargo fmt`
 - add tests for new features
+- be sure to use `cargo clippy` to detect common problems in your code (we cannot include this in the CI process because of an outstanding issue between clippy and lalrpop https://github.com/lalrpop/lalrpop/pull/384)
 
 
 # Mission, Vision, Values

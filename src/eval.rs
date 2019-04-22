@@ -30,7 +30,7 @@ pub fn eval(source: &str) -> Vec<Rc<LispValue>> {
     return result;
 }
 
-pub fn eval_program(program: &Vec<Expr>, env: Rc<Env>) -> Vec<Rc<LispValue>> {
+pub fn eval_program(program: &[Expr], env: Rc<Env>) -> Vec<Rc<LispValue>> {
     debug!("eval {:?}", program);
 
     let result: Vec<Rc<LispValue>> = program
@@ -67,20 +67,19 @@ pub fn eval_expression(expression: &Expr, env: Rc<Env>) -> Rc<LispValue> {
     return result;
 }
 
-pub fn eval_list(list: &Vec<Expr>, env: Rc<Env>) -> Rc<LispValue> {
+pub fn eval_list(list: &[Expr], env: Rc<Env>) -> Rc<LispValue> {
     debug!("eval_list {:?}", list);
-    if list.len() == 0 {
+    if list.is_empty() {
         return Rc::new(LispValue::Nill);
     }
 
-    //TODO
-    let mut list = list.clone();
+    let mut list = list.to_vec();
     let first = list.remove(0);
 
     match first {
         Expr::Atom(atom) => {
             let id = atom.expect_id("Unexpected non id");
-            let func = env.get(&id).expect(&format!("Symbol `{}` not found", id));
+            let func = env.get(&id).unwrap_or_else(|| panic!("Symbol `{}` not found", id));
             let arg_values: Vec<Rc<LispValue>> = list
                 .iter()
                 .map(|expr| eval_expression(expr, env.clone()))
@@ -117,7 +116,7 @@ pub fn eval_atom(atom: &Atom, env: Rc<Env>) -> Rc<LispValue> {
         Atom::Id(id) => match id.as_str() {
             "true" => Rc::new(LispValue::Bool(Bool::True)),
             "false" => Rc::new(LispValue::Bool(Bool::False)),
-            _ => env.get(&id).expect(&format!("Symbol {} not found", id)),
+            _ => env.get(&id).unwrap_or_else(|| panic!("Symbol {} not found", id)),
         },
     }
 }
@@ -134,9 +133,9 @@ pub fn eval_define_function(
     return Rc::new(LispValue::Nill);
 }
 
-pub fn eval_define_variable(var_name: &String, var_value: &Expr, env: Rc<Env>) -> Rc<LispValue> {
+pub fn eval_define_variable(var_name: &str, var_value: &Expr, env: Rc<Env>) -> Rc<LispValue> {
     let value = eval_expression(var_value, env.clone());
-    env.set(var_name.clone(), value);
+    env.set(var_name.to_string(), value);
 
     return Rc::new(LispValue::Nill);
 }
