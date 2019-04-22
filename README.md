@@ -1,4 +1,4 @@
-# frd-lisp
+# frd-lisp [![Build Status](https://travis-ci.org/franleplant/frd-lisp.svg?branch=master)](https://travis-ci.org/franleplant/frd-lisp)
 
 Lisp written in Rust as part of a research project in UTN-FRD (Universidad Tecnologica Nacional - Facultad Regional Delta)
 
