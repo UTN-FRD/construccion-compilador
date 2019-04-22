@@ -12,7 +12,7 @@ mod ast;
 mod env;
 mod eval;
 mod intrinsics;
-mod lisp_value;
+pub mod lisp_value;
 
 pub fn eval_file(file_name: &str) -> Vec<Rc<lisp_value::LispValue>> {
     use std::fs::File;
