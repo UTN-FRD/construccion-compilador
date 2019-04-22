@@ -1,0 +1,15 @@
+language: rust
+before_script:
+  - rustup component add rustfmt
+script:
+  - cargo fmt --all -- --check
+  - cargo buildo --verbose
+  - cargo test --verbose
+rust:
+  - stable
+  - beta
+  - nightly
+matrix:
+  allow_failures:
+    - rust: nightly
+  fast_finish: true
