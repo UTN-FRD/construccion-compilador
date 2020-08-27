@@ -21,7 +21,7 @@ pub enum LispValue {
 impl LispValue {
     pub fn unwrap_number(&self) -> &i64 {
         match self {
-            LispValue::Int(ref num) => return num,
+            LispValue::Int(ref num) => num,
             _ => panic!("BBBB"),
         }
     }
@@ -32,11 +32,11 @@ impl PartialEq for LispValue {
         use self::LispValue::*;
 
         match (self, other) {
-            (LispValue::Nill, LispValue::Nill) => return true,
-            (Int(ref n1), Int(ref n2)) => return n1 == n2,
-            (Id(ref id1), Id(ref id2)) => return *id1 == *id2,
-            (Bool(ref bool1), Bool(ref bool2)) => return bool1 == bool2,
-            _ => return false,
+            (LispValue::Nill, LispValue::Nill) => true,
+            (Int(ref n1), Int(ref n2)) => n1 == n2,
+            (Id(ref id1), Id(ref id2)) => *id1 == *id2,
+            (Bool(ref bool1), Bool(ref bool2)) => bool1 == bool2,
+            _ => false,
         }
     }
 }
@@ -48,9 +48,9 @@ impl Ord for LispValue {
         use self::LispValue::*;
 
         match (self, other) {
-            (Int(ref n1), Int(ref n2)) => return n1.cmp(n2),
+            (Int(ref n1), Int(ref n2)) => n1.cmp(n2),
             // TODO is this the right thing to do?
-            _ => return Ordering::Equal,
+            _ => Ordering::Equal,
         }
     }
 }
@@ -59,9 +59,9 @@ impl PartialOrd for LispValue {
     fn partial_cmp(&self, other: &LispValue) -> Option<Ordering> {
         use self::LispValue::*;
         match (self, other) {
-            (Int(ref n1), Int(ref n2)) => return Some(n1.cmp(n2)),
+            (Int(ref n1), Int(ref n2)) => Some(n1.cmp(n2)),
             // TODO is this the right thing to do?
-            _ => return None,
+            _ => None,
         }
     }
 }
@@ -116,11 +116,11 @@ impl Func {
         let result = eval_expression(&self.body[0], env.clone());
         debug!("func call {:?}", env);
         debug!("func result {:?}", result);
-        return result;
+        result
     }
 
     pub fn get_name(&self) -> &String {
-        return &self.name;
+        &self.name
     }
 }
 
