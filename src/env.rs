@@ -53,7 +53,7 @@ impl Env {
         }
     }
 
-    pub fn get(&self, key: &String) -> Option<Rc<LispValue>> {
+    pub fn get(&self, key: &str) -> Option<Rc<LispValue>> {
         {
             let env = self.env.borrow();
             let value = env.get(key);
