@@ -3,9 +3,9 @@ use std::collections::HashMap;
 use std::fmt;
 use std::rc::Rc;
 
-use ast::Expr;
-use env::Env;
-use eval::eval_expression;
+use crate::ast::Expr;
+use crate::env::Env;
+use crate::eval::eval_expression;
 
 #[derive(Clone)]
 pub enum LispValue {
@@ -125,19 +125,19 @@ impl Func {
 }
 
 impl Ord for Func {
-    fn cmp(&self, other: &Func) -> Ordering {
+    fn cmp(&self, _other: &Func) -> Ordering {
         Ordering::Equal
     }
 }
 
 impl PartialOrd for Func {
-    fn partial_cmp(&self, other: &Func) -> Option<Ordering> {
+    fn partial_cmp(&self, _other: &Func) -> Option<Ordering> {
         None
     }
 }
 
 impl PartialEq for Func {
-    fn eq(&self, other: &Func) -> bool {
+    fn eq(&self, _other: &Func) -> bool {
         false
     }
 }
