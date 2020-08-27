@@ -57,16 +57,15 @@ impl Env {
         {
             let env = self.env.borrow();
             let value = env.get(key);
-            if value.is_some() {
-                return Some(value.unwrap().clone());
+            if let Some(lisp_value) = value {
+                return Some(lisp_value.clone());
             }
         }
 
-        if self.parent.is_none() {
-            return None;
+        match self.parent.as_ref() {
+            Some(p) => p.get(key),
+            None => None,
         }
-
-        self.parent.as_ref().unwrap().get(key)
     }
 
     pub fn set(&self, key: String, value: Rc<LispValue>) {
