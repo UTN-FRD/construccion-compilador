@@ -10,6 +10,7 @@ use crate::eval::eval_expression;
 #[derive(Clone)]
 pub enum LispValue {
     Nill,
+    #[allow(dead_code)]
     Id(String),
     Int(i64),
     Bool(Bool),

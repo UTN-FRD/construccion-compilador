@@ -72,6 +72,7 @@ impl Env {
         self.env.borrow_mut().insert(key, value);
     }
 
+    #[allow(dead_code)]
     pub fn set_global(&self, key: String, value: Rc<LispValue>) {
         // This is the global env
         if self.root.is_none() {

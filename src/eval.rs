@@ -15,6 +15,7 @@ lalrpop_mod!(pub grammar); // synthesized by LALRPOP
 use crate::ast::{Atom, Expr};
 use crate::env::Env;
 
+#[allow(dead_code)]
 pub fn eval(source: &str) -> Vec<Rc<LispValue>> {
     debug!("eval {:?}", source);
     let parser = grammar::ProgramParser::new();
