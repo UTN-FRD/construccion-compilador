@@ -10,10 +10,10 @@
 use crate::lisp_value::{Bool, Func, LispValue};
 use std::rc::Rc;
 
-lalrpop_mod!(pub grammar); // synthesized by LALRPOP
-
 use crate::ast::{Atom, Expr};
 use crate::env::Env;
+
+use crate::grammar;
 
 #[allow(dead_code)]
 pub fn eval(source: &str) -> Vec<Rc<LispValue>> {
@@ -38,10 +38,6 @@ pub fn eval_program(program: &[Expr], env: Rc<Env>) -> Vec<Rc<LispValue>> {
         .iter()
         .map(|expr| eval_expression(expr, env.clone()))
         .collect();
-
-    //for res in &result {
-    //println!("RESULT {:?}", res)
-    //}
 
     debug!("eval_program END");
     result
@@ -165,18 +161,3 @@ pub fn eval_if(
         panic!("Still don't know how to coerce")
     }
 }
-
-//#[cfg(test)]
-//mod tests {
-//use super::*;
-
-//#[test]
-//fn base_cases() {
-//let _ = env_logger::try_init();
-//let ast = Parser::new().parse("(+ 1 2)").expect("To be parsed ok");
-//let ast_string = format!("{:?}", ast);
-//println!("Actual \n {:#?}", ast);
-//let results = eval(&ast);
-//assert_eq!(results[0].clone().unwrap_number(), 3.0);
-//}
-//}
