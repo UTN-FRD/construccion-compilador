@@ -1,7 +1,6 @@
-extern crate log;
 extern crate env_logger;
+extern crate log;
 use frd_lisp::eval_file;
-
 
 #[test]
 fn basics() {
