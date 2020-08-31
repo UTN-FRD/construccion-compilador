@@ -2,6 +2,7 @@
 name = "frd_lisp"
 version = "0.1.0"
 authors = ["Fran Guijarro <franleplant@gmail.com>"]
+edition = "2018"
 
 [build-dependencies]
 lalrpop = "0.16.2"
