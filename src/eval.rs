@@ -64,6 +64,7 @@ pub fn eval_expression(expression: &Expr, env: Rc<Env>) -> Rc<LispValue> {
     result
 }
 
+// evaluates a list
 pub fn eval_list(list: &[Expr], env: Rc<Env>) -> Rc<LispValue> {
     debug!("eval_list {:?}", list);
     if list.is_empty() {
