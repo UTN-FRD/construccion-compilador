@@ -1,4 +1,4 @@
-# frd-lisp [![Build Status](https://travis-ci.org/github/UTN-FRD/construccion-compilador.svg?branch=master)](https://travis-ci.org/github/UTN-FRD/construccion-compilador)
+# frd-lisp [![Build Status](https://api.travis-ci.org/UTN-FRD/compilador-funcional.svg?branch=master)](https://travis-ci.org/UTN-FRD/construccion-compilador)
 
 Lisp written in Rust as part of a research project in UTN-FRD (Universidad Tecnologica Nacional - Facultad Regional Delta)
 
