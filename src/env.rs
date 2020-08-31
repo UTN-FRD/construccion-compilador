@@ -53,26 +53,26 @@ impl Env {
         }
     }
 
-    pub fn get(&self, key: &String) -> Option<Rc<LispValue>> {
+    pub fn get(&self, key: &str) -> Option<Rc<LispValue>> {
         {
             let env = self.env.borrow();
             let value = env.get(key);
-            if value.is_some() {
-                return Some(value.unwrap().clone());
+            if let Some(lisp_value) = value {
+                return Some(lisp_value.clone());
             }
         }
 
-        if self.parent.is_none() {
-            return None;
+        match self.parent.as_ref() {
+            Some(p) => p.get(key),
+            None => None,
         }
-
-        self.parent.as_ref().unwrap().get(key)
     }
 
     pub fn set(&self, key: String, value: Rc<LispValue>) {
         self.env.borrow_mut().insert(key, value);
     }
 
+    #[allow(dead_code)]
     pub fn set_global(&self, key: String, value: Rc<LispValue>) {
         // This is the global env
         if self.root.is_none() {
