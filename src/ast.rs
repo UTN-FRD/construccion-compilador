@@ -44,6 +44,7 @@ impl Expr {
 pub enum Atom {
     Id(String),
     Int(i64),
+    StringAtom(String),
 }
 
 impl Atom {
