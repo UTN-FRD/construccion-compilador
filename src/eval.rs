@@ -112,7 +112,7 @@ pub fn eval_list(list: &[Expr], env: Rc<Env>) -> Rc<LispValue> {
 pub fn eval_atom(atom: &Atom, env: Rc<Env>) -> Rc<LispValue> {
     debug!("eval_atom {:?}", atom);
     match atom {
-        Atom::Int(num) => Rc::new(LispValue::Int(*num)),
+        Atom::Number(num) => Rc::new(LispValue::Number(*num)),
         Atom::StringAtom(s) => Rc::new(LispValue::StringValue(s.to_string())),
         Atom::Id(id) => match id.as_str() {
             "true" => Rc::new(LispValue::Bool(Bool::True)),
@@ -121,6 +121,7 @@ pub fn eval_atom(atom: &Atom, env: Rc<Env>) -> Rc<LispValue> {
                 .get(&id)
                 .unwrap_or_else(|| panic!("Symbol {} not found", id)),
         },
+        // Atom::Float(f) => Rc::new(LispValue::Float(*f)),
     }
 }
 
