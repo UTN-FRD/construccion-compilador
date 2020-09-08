@@ -5,7 +5,7 @@ use crate::lisp_value::{Bool, LispValue};
 
 pub fn add(arguments: &[Rc<LispValue>]) -> Rc<LispValue> {
     let res = arguments.iter().fold(0.0, |acc, x| acc + x.unwrap_number());
-    
+
     Rc::new(LispValue::Number(res))
 }
 
