@@ -16,6 +16,7 @@ pub enum LispValue {
     Bool(Bool),
     Intrinsic(fn(&[Rc<LispValue>]) -> Rc<LispValue>),
     Func(Func),
+    StringValue(String),
 }
 
 impl LispValue {
@@ -36,6 +37,7 @@ impl PartialEq for LispValue {
             (Int(ref n1), Int(ref n2)) => n1 == n2,
             (Id(ref id1), Id(ref id2)) => *id1 == *id2,
             (Bool(ref bool1), Bool(ref bool2)) => bool1 == bool2,
+            (StringValue(ref string1), StringValue(ref string2)) => string1 == string2,
             _ => false,
         }
     }
@@ -78,6 +80,7 @@ impl fmt::Debug for LispValue {
                 Bool::True => write!(f, "true"),
                 Bool::False => write!(f, "false"),
             },
+            LispValue::StringValue(string) => write!(f, "\"{}\"", string),
         }
     }
 }
