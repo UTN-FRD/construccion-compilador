@@ -12,4 +12,10 @@ rust:
 matrix:
   allow_failures:
     - rust: nightly
+  include:
+    - language: rust
+      rust: stable
+      name: "check wasm32 support"
+      install: rustup target add wasm32-unknown-unknown
+      script: cargo check --target wasm32-unknown-unknown
   fast_finish: true
