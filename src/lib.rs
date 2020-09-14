@@ -18,6 +18,12 @@ mod eval;
 mod intrinsics;
 pub mod lisp_value;
 
+#[cfg(feature = "wasm")]
+extern crate wasm_bindgen;
+
+#[cfg(feature = "wasm")]
+pub mod wasm;
+
 pub fn eval_file(file_name: &str) -> Vec<Rc<lisp_value::LispValue>> {
     use std::fs::File;
     use std::io::prelude::*;

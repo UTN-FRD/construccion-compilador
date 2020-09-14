@@ -1,2 +1,4 @@
 /target
 **/*.rs.bk
+# wasm-pack output directory
+/pkg 

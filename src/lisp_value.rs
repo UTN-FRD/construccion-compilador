@@ -146,3 +146,9 @@ impl PartialEq for Func {
 }
 
 impl Eq for Func {}
+
+impl fmt::Display for LispValue {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:?}", self)
+    }
+}
