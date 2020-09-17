@@ -1,6 +1,6 @@
-use std::rc::Rc;
 use crate::eval::eval;
 use crate::lisp_value::LispValue;
+use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
