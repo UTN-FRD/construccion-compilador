@@ -23,7 +23,9 @@ pub Expr: Expr = {
     },
 
     "(" <l:List> ")" => Expr::List(l),
+
     <a:Atom> => Expr::Atom(a),
+
 };
 
 pub List: Vec<Expr> = {
@@ -33,12 +35,11 @@ pub List: Vec<Expr> = {
 pub Atom: Atom = {
     <s:Op> => Atom::Id(s),
     <s:StringLiteral> => Atom::StringAtom(s),
-    //TODO float
-    <s:Number> => Atom::Int(s),
+    <s:Number> => Atom::Number(s),
     <s:Id> => Atom::Id(s),
 }
 
 Op: String = <s:r"[+\-*/=><]"> => s.to_string();
 Id: String = <s:r"[[:alpha:]][\d\w\-_]*\??"> => s.to_string();
-Number: i64 =  <s:r"[0-9]+"> => i64::from_str(s).unwrap();
+Number: f64 =  <s:r"(\-)?[0-9]+(\.[0-9]+)?"> => f64::from_str(s).unwrap();
 StringLiteral: String = <s:r#""(?:[^"\\]|\\.)*""#> => s[1..(s.len() - 1)].to_string();
