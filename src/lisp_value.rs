@@ -12,7 +12,7 @@ pub enum LispValue {
     Nill,
     #[allow(dead_code)]
     Id(String),
-    Int(i64),
+    Number(f64),
     Bool(Bool),
     Intrinsic(fn(&[Rc<LispValue>]) -> Rc<LispValue>),
     Func(Func),
@@ -20,9 +20,9 @@ pub enum LispValue {
 }
 
 impl LispValue {
-    pub fn unwrap_number(&self) -> &i64 {
+    pub fn unwrap_number(&self) -> &f64 {
         match self {
-            LispValue::Int(ref num) => num,
+            LispValue::Number(ref num) => num,
             _ => panic!("BBBB"),
         }
     }
@@ -34,7 +34,7 @@ impl PartialEq for LispValue {
 
         match (self, other) {
             (LispValue::Nill, LispValue::Nill) => true,
-            (Int(ref n1), Int(ref n2)) => n1 == n2,
+            (Number(ref n1), Number(ref n2)) => n1 == n2,
             (Id(ref id1), Id(ref id2)) => *id1 == *id2,
             (Bool(ref bool1), Bool(ref bool2)) => bool1 == bool2,
             (StringValue(ref string1), StringValue(ref string2)) => string1 == string2,
@@ -50,7 +50,7 @@ impl Ord for LispValue {
         use self::LispValue::*;
 
         match (self, other) {
-            (Int(ref n1), Int(ref n2)) => n1.cmp(n2),
+            (Number(ref n1), Number(ref n2)) => n1.partial_cmp(n2).unwrap(),
             // TODO is this the right thing to do?
             _ => Ordering::Equal,
         }
@@ -61,7 +61,7 @@ impl PartialOrd for LispValue {
     fn partial_cmp(&self, other: &LispValue) -> Option<Ordering> {
         use self::LispValue::*;
         match (self, other) {
-            (Int(ref n1), Int(ref n2)) => Some(n1.cmp(n2)),
+            (Number(ref n1), Number(ref n2)) => Some(n1.partial_cmp(n2).unwrap()),
             // TODO is this the right thing to do?
             _ => None,
         }
@@ -74,7 +74,7 @@ impl fmt::Debug for LispValue {
             LispValue::Nill => write!(f, "Nill"),
             LispValue::Intrinsic(_) => write!(f, "intrinsic"),
             LispValue::Func(func) => write!(f, "#func {}", func.get_name()),
-            LispValue::Int(num) => write!(f, "{}", num),
+            LispValue::Number(num) => write!(f, "{}", num),
             LispValue::Id(str) => write!(f, "{}", str),
             LispValue::Bool(lisp_bool) => match lisp_bool {
                 Bool::True => write!(f, "true"),

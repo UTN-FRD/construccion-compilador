@@ -43,7 +43,7 @@ impl Expr {
 #[derive(Debug, Clone)]
 pub enum Atom {
     Id(String),
-    Int(i64),
+    Number(f64),
     StringAtom(String),
 }
 
