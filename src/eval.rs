@@ -121,7 +121,6 @@ pub fn eval_atom(atom: &Atom, env: Rc<Env>) -> Rc<LispValue> {
                 .get(&id)
                 .unwrap_or_else(|| panic!("Symbol {} not found", id)),
         },
-        // Atom::Float(f) => Rc::new(LispValue::Float(*f)),
     }
 }
 
