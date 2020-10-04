@@ -20,6 +20,6 @@ impl LispVal {
 
     #[wasm_bindgen(method, js_name = toString)]
     pub fn to_string(&self) -> String {
-        format!("{}", self.0[0])
+        format!("{}", self.0.last().unwrap())
     }
 }
