@@ -1,0 +1,9 @@
+(define (apply f x) (f x))
+
+(define (add-1 x) (+ 1 x))
+
+(apply add-1 1)
+
+(apply add-1 2)
+
+(apply add-1 3)

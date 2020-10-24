@@ -24,11 +24,21 @@ fn id_test() {
 }
 
 #[test]
-fn variadic_functions() {
+fn variadic_functions_test() {
     let _ = env_logger::try_init();
     let result = eval_file("./tests/variadic_functions.flp");
     println!("{:?}", result);
 
     let string_result = format!("{:?}", result);
     assert_eq!(string_result, "[15]");
+}
+
+#[test]
+fn higher_order_functions_test() {
+    let _ = env_logger::try_init();
+    let result = eval_file("./tests/hofs.flp");
+    println!("{:?}", result);
+
+    let string_result = format!("{:?}", result);
+    assert_eq!(string_result, "[Nil, Nil, 2, 3, 4]");
 }
