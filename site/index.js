@@ -1,21 +1,26 @@
 import * as lisp from "frd_lisp";
 
-let input = document.getElementById("repl-input");
-
-let extracode = document.getElementById("repl-extra-code");
+let replInput = document.getElementById("repl-input");
+let replDefinitions = document.getElementById("repl-extra-code");
 let output = document.getElementById("repl-output");
 
-input.addEventListener("keyup", event => {
+replInput.addEventListener("keyup", event => {
     if (event.code === "Enter") {
         event.preventDefault();
-        let content = input.value;
-        let extra = extracode.value;
-        console.log(extra + content);
-        let parsed_value = new lisp.LispVal(extra + content);
 
+        // get input from console
+        let input = replInput.value;
+
+        // get input from definitions
+        let definitions = replDefinitions.value;
+
+        // parse definitions + user input
+        let parsed_value = new lisp.LispVal(definitions + input);
+
+        // show parsed value from replInput
         output.innerHTML = parsed_value.toString();
 
         // clear the input
-        input.value = "";
+        replInput.value = "";
     }
 });
