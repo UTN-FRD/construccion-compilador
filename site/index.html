@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="utf-8">
+    <link rel="stylesheet" href="./index.css">
     <title>FRD Lisp</title>
 </head>
 
@@ -10,13 +11,31 @@
     <noscript>This page contains webassembly and javascript content, please enable javascript in your browser.</noscript>
     <script src="./bootstrap.js"></script>
 
-    <div id="repl">
-        <p>Write some Lisp code and press <b>Enter</b> to evaluate it</p>
-        <label>Extra code</label>
-        <textarea id="repl-exftra-code"></textarea>
-        <textarea id="repl-input"></textarea>
-        <p id="repl-output"></p>
-    </div>
+    <header>
+        <div class="container">
+            <h1 class="main-heading">Compilador FRD</h1>
+            <h3 class="main-subheading">Write some Lisp code and press <b>Enter</b> to evaluate it</h3>
+        </div>
+    </header>
+
+    <main id="repl">
+        <div class="container">
+            <section class="section section--definitions">
+                <h4 class="section-heading">Definitions</h4>
+                <textarea class="section-textarea" id="repl-extra-code"></textarea>
+            </section>
+
+            <section class="section section--repl">
+                <h4 class="section-heading">Console</h4>
+                <textarea class="section-textarea" id="repl-input"></textarea>
+            </section>
+
+            <section class="section section--output">
+                <h4 class="section-heading">Output</h4>
+                <p id="repl-output"></p>
+            </section>
+        </div>
+    </main>
 </body>
 
 </html>

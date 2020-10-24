@@ -1,0 +1,88 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap');
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+html {
+  box-sizing: border-box;
+  font-family: 'Lato', sans-serif;
+  font-size: 62.5%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  color: #333;
+}
+
+header {
+  padding-top: 1.5rem;
+}
+
+.main-heading {
+  font-size: 3.6rem;
+  font-weight: 300;
+}
+
+.main-subheading {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+#repl {
+  padding: 3rem 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  margin: 0 auto;
+  width: 95%;
+}
+
+#repl .container {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  font-size: 1.5rem;
+}
+
+.section--definitions,
+.section--repl {
+  flex-basis: 49%;
+}
+
+.section--output {
+  margin-top: 3rem;
+  flex-basis: 100%;
+}
+
+.section-heading {
+  font-size: 2.25rem;
+  margin-bottom: 1rem;
+}
+
+textarea {
+  flex: 1;
+  color: inherit;
+  font-family: inherit;
+  font-size: 1.4rem;
+  padding: .75rem 1.25rem;
+  box-shadow: 0 .25rem 1rem rgba(0, 0, 0, .35);
+  border-radius: .5rem;
+  resize: none;
+  width: 100%;
+}
