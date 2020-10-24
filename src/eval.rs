@@ -68,7 +68,7 @@ pub fn eval_expression(expression: &Expr, env: Rc<Env>) -> Rc<LispValue> {
 pub fn eval_list(list: &[Expr], env: Rc<Env>) -> Rc<LispValue> {
     debug!("eval_list {:?}", list);
     if list.is_empty() {
-        return Rc::new(LispValue::Nill);
+        return Rc::new(LispValue::Nil);
     }
 
     let mut list = list.to_vec();
@@ -133,14 +133,14 @@ pub fn eval_define_function(
     let func = Func::new(fn_name, arg_names, body, env.clone());
     env.set(func.get_name().clone(), Rc::new(LispValue::Func(func)));
 
-    Rc::new(LispValue::Nill)
+    Rc::new(LispValue::Nil)
 }
 
 pub fn eval_define_variable(var_name: &str, var_value: &Expr, env: Rc<Env>) -> Rc<LispValue> {
     let value = eval_expression(var_value, env.clone());
     env.set(var_name.to_string(), value);
 
-    Rc::new(LispValue::Nill)
+    Rc::new(LispValue::Nil)
 }
 
 pub fn eval_if(
@@ -155,7 +155,7 @@ pub fn eval_if(
             Bool::True => eval_expression(positive, env),
             Bool::False => {
                 if negative.is_none() {
-                    return Rc::new(LispValue::Nill);
+                    return Rc::new(LispValue::Nil);
                 }
 
                 eval_expression(negative.as_ref().unwrap(), env)
