@@ -4,10 +4,8 @@ let replInput = document.getElementById("repl-input");
 let replDefinitions = document.getElementById("repl-extra-code");
 let output = document.getElementById("repl-output");
 
-replInput.addEventListener("keyup", event => {
-    if (event.code === "Enter") {
-        event.preventDefault();
-
+document.getElementById("ejecutar").addEventListener("click", event => {
+    try{
         // get input from console
         let input = replInput.value;
 
@@ -22,5 +20,7 @@ replInput.addEventListener("keyup", event => {
 
         // clear the input
         replInput.value = "";
+    }catch(e){
+        output.innerHTML = (new Date())+" ERROR - "+e
     }
 });

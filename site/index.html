@@ -3,7 +3,12 @@
 
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="./index.css">
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="codemirror/lib/codemirror.css">
+    <link rel="stylesheet" href="codemirror/theme/ayu-dark.css">
+    <script src="codemirror/lib/codemirror.js"></script>
+    <script src="codemirror/mode/haskell/haskell.js"></script>
+    <script src="codemirror/mode/shell/shell.js"></script>
     <title>FRD Lisp</title>
 </head>
 
@@ -29,6 +34,7 @@
                 <h4 class="section-heading">Console</h4>
                 <textarea class="section-textarea" id="repl-input"></textarea>
             </section>
+            <button id="ejecutar">Ejecutar</button>
 
             <section class="section section--output">
                 <h4 class="section-heading">Output</h4>
@@ -36,6 +42,19 @@
             </section>
         </div>
     </main>
+    <script>
+    var codeCodeMirror = CodeMirror.fromTextArea(document.getElementById("repl-extra-code"),
+        {lineNumbers: true,
+        mode: "haskell"}
+    );
+    var shellCodeMirror = CodeMirror.fromTextArea(document.getElementById("repl-input"),
+        {lineNumbers: true,
+        theme: "ayu-dark",
+        mode: "shell"}
+    );
+    shellCodeMirror.setOption("theme","ayu-dark");
+
+    </script>
 </body>
 
 </html>
