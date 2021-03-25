@@ -9,17 +9,20 @@
 //
 use crate::lisp_value::{Bool, Func, LispValue};
 use std::rc::Rc;
-
 use crate::ast::{Atom, Expr};
 use crate::env::Env;
-
 use crate::grammar;
+use crate::tok;
+
 
 #[allow(dead_code)]
 pub fn eval(source: &str) -> Vec<Rc<LispValue>> {
+    let mut errors = Vec::new();
     debug!("eval {:?}", source);
     let parser = grammar::ProgramParser::new();
-    let result = parser.parse(source);
+    let tokens = tok::tokenize(source);
+    let tokens: Vec<tok::Tok> = tokens.into_iter().map(|(_, tok, _)| tok).collect();
+    let result = parser.parse(&mut errors, tokens);
     assert!(result.is_ok(), "Syntax error {:?}", result);
     debug!("ast {:?}", result);
 

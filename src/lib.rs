@@ -1,7 +1,6 @@
 #[macro_use]
 extern crate log;
 extern crate env_logger;
-
 use lalrpop_util::lalrpop_mod;
 
 lalrpop_mod!(
@@ -12,6 +11,7 @@ lalrpop_mod!(
 
 use std::rc::Rc;
 
+mod tok;
 mod ast;
 mod env;
 mod eval;
@@ -40,10 +40,13 @@ fn main_test() {
     let _ = env_logger::try_init();
 
     fn eval_with_debugs(source: &str) -> Vec<Rc<lisp_value::LispValue>> {
+        let mut errors = Vec::new();
         println!("SOURCE {:?}", source);
         // PARSE
         let parser = grammar::ProgramParser::new();
-        let result = parser.parse(source);
+        let tokens = tok::tokenize(source);
+        let tokens: Vec<tok::Tok> = tokens.into_iter().map(|(_, tok, _)| tok).collect();
+        let result = parser.parse(&mut errors, tokens);
         println!("AST {:?}", result);
         assert!(result.is_ok());
 
