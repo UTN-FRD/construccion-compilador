@@ -1,22 +1,22 @@
 use std::str::FromStr;
 use crate::ast::{Expr, Atom};
-use crate::tok::Tok;
+use crate::token::Token;
 use lalrpop_util::ErrorRecovery;
 
-grammar<'err, 'input>(errors: &'err mut Vec<ErrorRecovery<usize, Tok<'input>, &'static str>>);
+grammar<'err, 'input>(errors: &'err mut Vec<ErrorRecovery<usize, Token<'input>, &'static str>>);
 
 
 extern {
-    enum Tok<'input> {
-        "-" => Tok::Minus,
-        "+" => Tok::Plus,
-        "(" => Tok::LParen,
-        ")" => Tok::RParen,
-        "define" => Tok::Define,
-        "if" => Tok::If,
-        "number literal" => Tok::Num(<f64>),
-        "string literal" => Tok::String(<&'input str>),
-        "identifier" => Tok::String(<&'input str>)
+    enum Token<'input> {
+        "-" => Token::Minus,
+        "+" => Token::Plus,
+        "(" => Token::LParen,
+        ")" => Token::RParen,
+        "define" => Token::Define,
+        "if" => Token::If,
+        "number literal" => Token::Num(<f64>),
+        "string literal" => Token::String(<&'input str>),
+        "identifier" => Token::String(<&'input str>)
     }
 }
 

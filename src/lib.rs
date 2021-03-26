@@ -11,7 +11,7 @@ lalrpop_mod!(
 
 use std::rc::Rc;
 
-mod tok;
+mod token;
 mod ast;
 mod env;
 mod eval;
@@ -44,8 +44,8 @@ fn main_test() {
         println!("SOURCE {:?}", source);
         // PARSE
         let parser = grammar::ProgramParser::new();
-        let tokens = tok::tokenize(source);
-        let tokens: Vec<tok::Tok> = tokens.into_iter().map(|(_, tok, _)| tok).collect();
+        let tokens = token::tokenize(source);
+        let tokens: Vec<token::Token> = tokens.into_iter().map(|(_, tok, _)| tok).collect();
         let result = parser.parse(&mut errors, tokens);
         println!("AST {:?}", result);
         assert!(result.is_ok());

@@ -1,7 +1,7 @@
 use std::str::{CharIndices, FromStr};
 
 #[derive(Clone, Debug, PartialEq)]
-pub enum Tok<'input> {
+pub enum Token<'input> {
     Num(f64),
     LParen,
     RParen,
@@ -17,7 +17,7 @@ pub enum Tok<'input> {
 
 // This function takes a string as parameter and returns a vector of triples
 // with the following structure: (start_position, token, end_position)
-pub fn tokenize<'input>(s: &'input str) -> Vec<(usize, Tok<'input>, usize)> {
+pub fn tokenize<'input>(s: &'input str) -> Vec<(usize, Token<'input>, usize)> {
     let mut tokens = Vec::new();
     let mut char_indices = s.char_indices();
     let mut lookahead = char_indices.next();
@@ -25,24 +25,24 @@ pub fn tokenize<'input>(s: &'input str) -> Vec<(usize, Tok<'input>, usize)> {
         // skip whitespace characters
         if !c.is_whitespace() {
             match c {
-                '(' => tokens.push(Tok::LParen),
-                '-' => tokens.push(Tok::Minus),
-                ')' => tokens.push(Tok::RParen),
-                '+' => tokens.push(Tok::Plus),
-                '*' => tokens.push(Tok::Times),
-                ',' => tokens.push(Tok::Comma),
-                '/' => tokens.push(Tok::Div),
+                '(' => tokens.push(Token::LParen),
+                '-' => tokens.push(Token::Minus),
+                ')' => tokens.push(Token::RParen),
+                '+' => tokens.push(Token::Plus),
+                '*' => tokens.push(Token::Times),
+                ',' => tokens.push(Token::Comma),
+                '/' => tokens.push(Token::Div),
                 '"' => {
                     let (ci, _) = char_indices.next().expect("Unclosed '\"'"); // consume opening '"'
                     let (slice_end, _) = take_while(ci, &mut char_indices, |c| c != '"');
                     lookahead = char_indices.next(); // consume closing '"'
-                    tokens.push(Tok::String(&s[ci..slice_end]));
+                    tokens.push(Token::String(&s[ci..slice_end]));
                     continue;
                 }
                 _ if c.is_digit(10) => {
                     let (slice_end, next) = take_while(ci, &mut char_indices, |c| c.is_digit(10));
                     lookahead = next;
-                    tokens.push(Tok::Num(f64::from_str(&s[ci..slice_end]).unwrap()));
+                    tokens.push(Token::Num(f64::from_str(&s[ci..slice_end]).unwrap()));
                     continue;
                 }
                 _ => {
@@ -87,14 +87,14 @@ where
 fn tok1_test() {
     let source_code = "("; // should return (0, LParen, 1)
     let tokens = tokenize(source_code);
-    assert_eq!(tokens, [(0, Tok::LParen, 1)])
+    assert_eq!(tokens, [(0, Token::LParen, 1)])
 }
 
 #[test]
 fn tok2_test() {
     let source_code = "()";
     let tokens = tokenize(source_code);
-    assert_eq!(tokens, [(0, Tok::LParen, 1), (2, Tok::RParen, 3)])
+    assert_eq!(tokens, [(0, Token::LParen, 1), (2, Token::RParen, 3)])
 }
 
 #[test]
@@ -102,11 +102,41 @@ fn tok3_test() {
     let source_code = "(1 2 3)";
     let tokens = tokenize(source_code);
     let expected = [
-        (0, Tok::LParen, 1),
-        (2, Tok::Num(1.0), 3),
-        (4, Tok::Num(2.0), 5),
-        (6, Tok::Num(3.0), 7),
-        (8, Tok::RParen, 9),
+        (0, Token::LParen, 1),
+        (2, Token::Num(1.0), 3),
+        (4, Token::Num(2.0), 5),
+        (6, Token::Num(3.0), 7),
+        (8, Token::RParen, 9),
     ];
     assert_eq!(tokens, expected)
+}
+
+#[test]
+fn tok4_test() {
+    let source_code = "\"string\"";
+    let tokens = tokenize(source_code);
+    assert_eq!(tokens, [(0, Token::String("string"), 1)])
+}
+
+#[test]
+fn tok5_test() {
+    let source_code = "\"another string\"";
+    let tokens = tokenize(source_code);
+    assert_eq!(tokens, [(0, Token::String("another string"), 1)])
+}
+
+
+#[test]
+fn tok6_test() {
+    let source_code = "(define (id x) (x))";
+    let tokens = tokenize(source_code);
+    assert_eq!(tokens, [(0, Token::String("another string"), 1)])
+}
+
+
+#[test]
+fn tok7_test() {
+    let source_code = "\"hello";
+    let tokens = tokenize(source_code);
+    assert_eq!(tokens, [(0, Token::String("another string"), 1)])
 }

@@ -10,7 +10,7 @@ lalrpop_mod!(
 ); // synthesized by LALRPOP
 
 use std::rc::Rc;
-mod tok;
+mod token;
 mod ast;
 mod env;
 mod eval;
@@ -43,8 +43,8 @@ pub fn main() {
 fn repl_eval(source: &str, env: Rc<env::Env>) -> Vec<Rc<lisp_value::LispValue>> {
     let mut errors = Vec::new();
     let parser = grammar::ProgramParser::new();
-    let tokens = tok::tokenize(source);
-    let tokens: Vec<tok::Tok> = tokens.into_iter().map(|(_, tok, _)| tok).collect();
+    let tokens = token::tokenize(source);
+    let tokens: Vec<token::Token> = tokens.into_iter().map(|(_, tok, _)| tok).collect();
     let result = parser.parse(&mut errors, tokens);
     assert!(result.is_ok(), "Syntax error {:?}", result);
 
