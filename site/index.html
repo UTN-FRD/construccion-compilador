@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="utf-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="index.css">
     <link rel="stylesheet" href="codemirror/lib/codemirror.css">
     <link rel="stylesheet" href="codemirror/theme/ayu-dark.css">
@@ -12,35 +13,23 @@
     <title>FRD Lisp</title>
 </head>
 
-<body>
+<body class="container">
     <noscript>This page contains webassembly and javascript content, please enable javascript in your browser.</noscript>
     <script src="./bootstrap.js"></script>
 
-    <header>
-        <div class="container">
-            <h1 class="main-heading">Compilador FRD</h1>
-            <h3 class="main-subheading">Write some Lisp code and press <b>Enter</b> to evaluate it</h3>
+    <div class="row">
+        <div class="col">
+            <h1>Compilador FRD</h1>
+            <p>Write some Lisp code and press <b>Enter</b> to evaluate it</p>
         </div>
-    </header>
+    </div>
 
-    <main id="repl">
-        <div class="container">
-            <section class="section section--definitions">
-                <h4 class="section-heading">Definitions</h4>
-                <textarea class="section-textarea" id="repl-extra-code"></textarea>
-            </section>
-
-            <section class="section section--repl">
-                <h4 class="section-heading">Console</h4>
-                <textarea class="section-textarea" id="repl-input"></textarea>
-            </section>
-            <button id="execute">Ejecutar</button>
-
-            <section class="section section--output">
-                <h4 class="section-heading">Output</h4>
-                <p id="repl-output"></p>
-            </section>
+    <div class="row">
+        <div class="col-10">
+            <textarea class="section-textarea" id="repl-input"></textarea>
         </div>
-    </main>
+        <div class="col-2"></div>
+    </div>
+
 </body>
 </html>
