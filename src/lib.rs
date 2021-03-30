@@ -12,10 +12,10 @@ lalrpop_mod!(
 use std::rc::Rc;
 
 mod token;
-mod ast;
+pub mod ast;
 mod env;
-mod eval;
 mod intrinsics;
+pub mod eval;
 pub mod lisp_value;
 
 #[cfg(feature = "wasm")]
@@ -40,13 +40,9 @@ fn main_test() {
     let _ = env_logger::try_init();
 
     fn eval_with_debugs(source: &str) -> Vec<Rc<lisp_value::LispValue>> {
-        let mut errors = Vec::new();
         println!("SOURCE {:?}", source);
         // PARSE
-        let parser = grammar::ProgramParser::new();
-        let tokens = token::tokenize(source);
-        let tokens: Vec<token::Token> = tokens.into_iter().map(|(_, tok, _)| tok).collect();
-        let result = parser.parse(&mut errors, tokens);
+        let result = eval::parse(source);
         println!("AST {:?}", result);
         assert!(result.is_ok());
 
