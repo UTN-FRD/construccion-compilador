@@ -9,7 +9,7 @@ use crate::eval::eval_expression;
 
 #[derive(Clone)]
 pub enum LispValue {
-    Nill,
+    Nil,
     #[allow(dead_code)]
     Id(String),
     Number(f64),
@@ -33,7 +33,7 @@ impl PartialEq for LispValue {
         use self::LispValue::*;
 
         match (self, other) {
-            (LispValue::Nill, LispValue::Nill) => true,
+            (LispValue::Nil, LispValue::Nil) => true,
             (Number(ref n1), Number(ref n2)) => n1 == n2,
             (Id(ref id1), Id(ref id2)) => *id1 == *id2,
             (Bool(ref bool1), Bool(ref bool2)) => bool1 == bool2,
@@ -71,7 +71,7 @@ impl PartialOrd for LispValue {
 impl fmt::Debug for LispValue {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            LispValue::Nill => write!(f, "Nill"),
+            LispValue::Nil => write!(f, "Nil"),
             LispValue::Intrinsic(_) => write!(f, "intrinsic"),
             LispValue::Func(func) => write!(f, "#func {}", func.get_name()),
             LispValue::Number(num) => write!(f, "{}", num),
