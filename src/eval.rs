@@ -7,15 +7,15 @@
 //TODO
 //- instead of Panic! on every error it would nice to a hace Result infra
 //
-use lalrpop_util::ParseError;
-use crate::lisp_value::{Bool, Func, LispValue};
-use std::rc::Rc;
 use crate::ast::{Atom, Expr};
 use crate::env::Env;
 use crate::grammar;
+use crate::lisp_value::{Bool, Func, LispValue};
 use crate::token;
+use lalrpop_util::ParseError;
+use std::rc::Rc;
 
-pub fn parse(source: &'_ str) -> Result<Vec<Expr>, ParseError<(), token::Token<'_>, &'static str>>{
+pub fn parse(source: &'_ str) -> Result<Vec<Expr>, ParseError<(), token::Token<'_>, &'static str>> {
     let mut errors = Vec::new();
     debug!("eval {:?}", source);
     let parser = grammar::ProgramParser::new();

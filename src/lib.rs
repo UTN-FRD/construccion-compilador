@@ -11,12 +11,12 @@ lalrpop_mod!(
 
 use std::rc::Rc;
 
-mod token;
 pub mod ast;
 mod env;
-mod intrinsics;
 pub mod eval;
+mod intrinsics;
 pub mod lisp_value;
+mod token;
 
 #[cfg(feature = "wasm")]
 extern crate wasm_bindgen;

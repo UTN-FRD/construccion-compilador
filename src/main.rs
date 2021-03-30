@@ -10,12 +10,12 @@ lalrpop_mod!(
 ); // synthesized by LALRPOP
 
 use std::rc::Rc;
-mod token;
 mod ast;
 mod env;
 mod eval;
 mod intrinsics;
 mod lisp_value;
+mod token;
 
 use std::io;
 use std::io::prelude::*;
