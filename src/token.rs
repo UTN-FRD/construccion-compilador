@@ -9,6 +9,9 @@ pub enum Token<'input> {
     Plus,
     Times,
     Div,
+    Equal,
+    GreaterThan,
+    LessThan,
     Comma,
     Define,
     If,
@@ -29,6 +32,9 @@ pub fn tokenize<'input>(s: &'input str) -> Vec<(usize, Token<'input>, usize)> {
                 '(' => tokens.push(Token::LParen),
                 '-' => tokens.push(Token::Minus),
                 ')' => tokens.push(Token::RParen),
+                '=' => tokens.push(Token::Equal),
+                '<' => tokens.push(Token::LessThan),
+                '>' => tokens.push(Token::GreaterThan),
                 '+' => tokens.push(Token::Plus),
                 '*' => tokens.push(Token::Times),
                 ',' => tokens.push(Token::Comma),
@@ -187,4 +193,20 @@ fn tok8_test() {
             (14, Token::RParen, 15)
         ]
     )
+}
+
+#[test]
+fn tok9_test() {
+    let source = "(= 3 x)";
+    let tokens = tokenize(source);
+    assert_eq!(
+        tokens,
+        [
+            (0, Token::LParen, 1),
+            (2, Token::Equal, 3),
+            (4, Token::Num(3.0), 5),
+            (6, Token::Identifier("x"), 7),
+            (8, Token::RParen, 9)
+        ]
+    );
 }
