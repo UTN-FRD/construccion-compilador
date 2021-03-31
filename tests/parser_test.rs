@@ -27,10 +27,9 @@ fn parse_subtract_operation() {
     assert_eq!(result.unwrap()[0], expected);
 }
 
-// TODO: parse floating point numbers
 #[test]
 fn parse_add_operation() {
-    let source = "(+ 3 4 2 34)";
+    let source = "(+ 3 4 2 34.3)";
     let result = eval::parse(source);
     assert!(result.is_ok());
     let expected = Expr::List(vec![
@@ -38,7 +37,7 @@ fn parse_add_operation() {
         Expr::Atom(Atom::Number(3.0)),
         Expr::Atom(Atom::Number(4.0)),
         Expr::Atom(Atom::Number(2.0)),
-        Expr::Atom(Atom::Number(34.0)),
+        Expr::Atom(Atom::Number(34.3)),
     ]);
     assert_eq!(result.unwrap()[0], expected);
 }

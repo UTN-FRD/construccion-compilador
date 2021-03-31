@@ -47,7 +47,21 @@ pub fn tokenize<'input>(s: &'input str) -> Vec<(usize, Token<'input>, usize)> {
                     continue;
                 }
                 _ if c.is_digit(10) => {
-                    let (slice_end, next) = take_while(ci, &mut char_indices, |c| c.is_digit(10));
+                    let mut has_dot = false;
+                    let (slice_end, next) = take_while(ci, &mut char_indices, |c| {
+                        if c.is_digit(10) {
+                            true
+                        } else if c == '.' {
+                            if !has_dot {
+                                has_dot = true;
+                                true
+                            } else {
+                                false
+                            }
+                        } else {
+                            false
+                        }
+                    });
                     lookahead = next;
                     tokens.push(Token::Num(f64::from_str(&s[ci..slice_end]).unwrap()));
                     continue;
@@ -88,10 +102,10 @@ fn parse_identifier(s: &str) -> Token {
 fn take_while<F>(
     slice_start: usize,
     char_indices: &mut CharIndices,
-    f: F,
+    mut f: F,
 ) -> (usize, Option<(usize, char)>)
 where
-    F: Fn(char) -> bool,
+    F: FnMut(char) -> bool,
 {
     let mut slice_end = slice_start + 1;
 
@@ -210,4 +224,11 @@ fn tok9_test() {
             (8, Token::RParen, 9)
         ]
     );
+}
+
+#[test]
+fn tok10_test() {
+    let source_code = "10.5";
+    let tokens = tokenize(source_code);
+    assert_eq!(tokens, [(0, Token::Num(10.5), 1)])
 }
