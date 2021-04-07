@@ -12,7 +12,7 @@ lalrpop_mod!(
 
 use std::rc::Rc;
 
-mod ast;
+pub mod ast;
 mod env;
 mod eval;
 mod intrinsics;
