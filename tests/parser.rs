@@ -3,13 +3,13 @@
 // parsing, etc.), parsing is part of its "external" interface and so the
 // tests shouldn't live within the source file.
 
-use frd_lisp::ast as ast;
-use frd_lisp::grammar as grammar;
+use frd_lisp::ast;
+use frd_lisp::grammar;
 
 #[test]
 fn addition_test() {
-    use ast::Expr as Expr;
-    use ast::Atom as Atom;
+    use ast::Atom;
+    use ast::Expr;
 
     // TODO: Move this to a `setup` function that prepares the `parser`
     // object?
@@ -20,12 +20,12 @@ fn addition_test() {
     // NOTE: Both TODOs apply for the following tests.
     let parser = grammar::ProgramParser::new();
 
-    let expected = vec!(
+    let expected = vec![
         // TODO: Should it use a (yet to be created) `Atom::Op`?
         Expr::Atom(Atom::Id("+".to_string())),
         Expr::Atom(Atom::Number(1.0)),
-        Expr::Atom(Atom::Number(2.0))
-    );
+        Expr::Atom(Atom::Number(2.0)),
+    ];
 
     let result = parser.parse("+ 1 2").unwrap();
 
@@ -34,20 +34,16 @@ fn addition_test() {
 
 #[test]
 fn list_addition_test() {
-    use ast::Expr as Expr;
-    use ast::Atom as Atom;
+    use ast::Atom;
+    use ast::Expr;
 
     let parser = grammar::ProgramParser::new();
 
-    let expected = vec!(
-        Expr::List(
-            vec!(
-                Expr::Atom(Atom::Id("+".to_string())),
-                Expr::Atom(Atom::Number(1.0)),
-                Expr::Atom(Atom::Number(2.0))
-            )
-        )
-    );
+    let expected = vec![Expr::List(vec![
+        Expr::Atom(Atom::Id("+".to_string())),
+        Expr::Atom(Atom::Number(1.0)),
+        Expr::Atom(Atom::Number(2.0)),
+    ])];
 
     let result = parser.parse("(+ 1 2)").unwrap();
 
