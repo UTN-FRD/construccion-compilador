@@ -1,7 +1,6 @@
 #[macro_use]
 extern crate log;
 extern crate env_logger;
-
 use lalrpop_util::lalrpop_mod;
 
 lalrpop_mod!(
@@ -11,12 +10,12 @@ lalrpop_mod!(
 ); // synthesized by LALRPOP
 
 use std::rc::Rc;
-
 mod ast;
 mod env;
 mod eval;
 mod intrinsics;
 mod lisp_value;
+mod token;
 
 use std::io;
 use std::io::prelude::*;
@@ -42,8 +41,7 @@ pub fn main() {
 }
 
 fn repl_eval(source: &str, env: Rc<env::Env>) -> Vec<Rc<lisp_value::LispValue>> {
-    let parser = grammar::ProgramParser::new();
-    let result = parser.parse(source);
+    let result = eval::parse(source);
     assert!(result.is_ok(), "Syntax error {:?}", result);
 
     eval::eval_program(&result.unwrap(), env)

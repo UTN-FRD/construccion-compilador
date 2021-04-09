@@ -1,7 +1,29 @@
 use std::str::FromStr;
 use crate::ast::{Expr, Atom};
+use crate::token::Token;
+use lalrpop_util::ErrorRecovery;
 
-grammar;
+grammar<'err, 'input>(errors: &'err mut Vec<ErrorRecovery<usize, Token<'input>, &'static str>>);
+
+
+extern {
+    enum Token<'input> {
+        "=" => Token::Equal,
+        ">" => Token::GreaterThan,
+        "<" => Token::LessThan,
+        "-" => Token::Minus,
+        "+" => Token::Plus,
+        "*" => Token::Times,
+        "/" => Token::Div,
+        "(" => Token::LParen,
+        ")" => Token::RParen,
+        "define" => Token::Define,
+        "if" => Token::If,
+        "number literal" => Token::Num(<f64>),
+        "string literal" => Token::String(<&'input str>),
+        "identifier" => Token::Identifier(<&'input str>)
+    }
+}
 
 pub Program: Vec<Expr> = {
     Expr*
@@ -10,12 +32,12 @@ pub Program: Vec<Expr> = {
 // these are the rules we should follow
 // https://docs.racket-lang.org/guide/syntax-overview.html#%28part._local-binding-intro%29
 pub Expr: Expr = {
-    "(" "define" "(" <fn_name: Id> <arg_names: Id*> ")" <body: Expr+> ")" => {
-        Expr::DefineFunction(fn_name, arg_names, body)
+    "(" "define" "(" <fn_name: "identifier"> <arg_names: "identifier"*> ")" <body: Expr+> ")" => {
+        Expr::DefineFunction(fn_name.to_string(), arg_names.iter().map(|s| s.to_string()).collect::<Vec<String>>(), body)
     },
 
-    "(" "define" <var_name: Id> <var_value: Expr> ")" => {
-        Expr::DefineVariable(var_name, Box::new(var_value))
+    "(" "define" <var_name: "identifier"> <var_value: Expr> ")" => {
+        Expr::DefineVariable(var_name.to_string(), Box::new(var_value))
     },
 
     "(" "if" <cond: Expr> <positive: Expr> <negative: Expr?> ")" => {
@@ -24,7 +46,9 @@ pub Expr: Expr = {
 
     "(" <l:List> ")" => Expr::List(l),
 
-    <a:Atom> => Expr::Atom(a),
+    <a:Atom> => Expr::Atom(a)
+
+    // ! => { errors.push(<>); println!("{:?}", <>)},
 
 };
 
@@ -33,13 +57,18 @@ pub List: Vec<Expr> = {
 }
 
 pub Atom: Atom = {
-    <s:Op> => Atom::Id(s),
-    <s:StringLiteral> => Atom::StringAtom(s),
-    <s:Number> => Atom::Number(s),
-    <s:Id> => Atom::Id(s),
+    Operation,
+    "string literal" => Atom::StringAtom(<>.to_string()),
+    "number literal" => Atom::Number(<>),
+    "identifier" => Atom::Id(<>.to_string()),
 }
 
-Op: String = <s:r"[+\-*/=><]"> => s.to_string();
-Id: String = <s:r"[[:alpha:]][\d\w\-_]*\??"> => s.to_string();
-Number: f64 =  <s:r"(\-)?[0-9]+(\.[0-9]+)?"> => f64::from_str(s).unwrap();
-StringLiteral: String = <s:r#""(?:[^"\\]|\\.)*""#> => s[1..(s.len() - 1)].to_string();
+pub Operation: Atom = {
+    "<" => Atom::Id("<".to_string()),
+    ">" => Atom::Id(">".to_string()),
+    "=" => Atom::Id("=".to_string()),
+    "+" => Atom::Id("+".to_string()),
+    "-" => Atom::Id("-".to_string()),
+    "*" => Atom::Id("*".to_string()),
+    "/" => Atom::Id("/".to_string()),
+}
