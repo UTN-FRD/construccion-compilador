@@ -12,17 +12,11 @@ pub enum Expr {
 
 impl Expr {
     pub fn is_atom(&self) -> bool {
-        match self {
-            Expr::Atom(_) => true,
-            _ => false,
-        }
+        matches!(self, Expr::Atom(_))
     }
 
     pub fn is_list(&self) -> bool {
-        match self {
-            Expr::List(_) => true,
-            _ => false,
-        }
+        matches!(self, Expr::List(_))
     }
 
     pub fn expect_atom(self, error_message: &str) -> Atom {

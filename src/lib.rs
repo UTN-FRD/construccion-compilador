@@ -1,7 +1,6 @@
 #[macro_use]
 extern crate log;
 extern crate env_logger;
-
 use lalrpop_util::lalrpop_mod;
 
 lalrpop_mod!(
@@ -14,9 +13,10 @@ use std::rc::Rc;
 
 pub mod ast;
 mod env;
-mod eval;
+pub mod eval;
 mod intrinsics;
 pub mod lisp_value;
+mod token;
 
 #[cfg(feature = "wasm")]
 extern crate wasm_bindgen;
@@ -42,8 +42,7 @@ fn main_test() {
     fn eval_with_debugs(source: &str) -> Vec<Rc<lisp_value::LispValue>> {
         println!("SOURCE {:?}", source);
         // PARSE
-        let parser = grammar::ProgramParser::new();
-        let result = parser.parse(source);
+        let result = eval::parse(source);
         println!("AST {:?}", result);
         assert!(result.is_ok());
 
