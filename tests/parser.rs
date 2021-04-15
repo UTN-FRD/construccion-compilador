@@ -4,21 +4,14 @@
 // tests shouldn't live within the source file.
 
 use frd_lisp::ast;
-use frd_lisp::grammar;
+use frd_lisp::parse;
+use frd_lisp::token;
 
 #[test]
 fn addition_test() {
     use ast::Atom;
     use ast::Expr;
-
-    // TODO: Move this to a `setup` function that prepares the `parser`
-    // object?
-    //
-    // TODO: The parser should take a `Lexer` argument if we're going
-    // to use our own lexer.
-    //
-    // NOTE: Both TODOs apply for the following tests.
-    let parser = grammar::ProgramParser::new();
+    use token::Token;
 
     let expected = vec![
         // TODO: Should it use a (yet to be created) `Atom::Op`?
@@ -27,7 +20,9 @@ fn addition_test() {
         Expr::Atom(Atom::Number(2.0)),
     ];
 
-    let result = parser.parse("+ 1 2").unwrap();
+    let tokens = vec![Token::Plus, Token::Num(1.0), Token::Num(2.0)];
+
+    let result = parse(tokens).unwrap();
 
     assert_eq!(&result, &expected);
 }
@@ -36,8 +31,7 @@ fn addition_test() {
 fn list_addition_test() {
     use ast::Atom;
     use ast::Expr;
-
-    let parser = grammar::ProgramParser::new();
+    use token::Token;
 
     let expected = vec![Expr::List(vec![
         Expr::Atom(Atom::Id("+".to_string())),
@@ -45,7 +39,15 @@ fn list_addition_test() {
         Expr::Atom(Atom::Number(2.0)),
     ])];
 
-    let result = parser.parse("(+ 1 2)").unwrap();
+    let tokens = vec![
+        Token::LParen,
+        Token::Plus,
+        Token::Num(1.0),
+        Token::Num(2.0),
+        Token::RParen,
+    ];
+
+    let result = parse(tokens).unwrap();
 
     assert_eq!(&result, &expected);
 }
