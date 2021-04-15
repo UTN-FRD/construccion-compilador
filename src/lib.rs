@@ -26,7 +26,9 @@ pub mod wasm;
 
 // TODO: This function should be exposed through Javascript.
 // TODO: Add type aliases so we don't write thess horrendous types?
-pub fn parse(tokens: Vec<token::Token>) -> Result<Vec<ast::Expr>, lalrpop_util::ParseError<(), token::Token<'_>, &'static str>> {
+pub fn parse(
+    tokens: Vec<token::Token>,
+) -> Result<Vec<ast::Expr>, lalrpop_util::ParseError<(), token::Token<'_>, &'static str>> {
     let mut errors = Vec::new();
     let parser = grammar::ProgramParser::new();
 
