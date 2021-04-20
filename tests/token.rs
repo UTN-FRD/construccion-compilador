@@ -1,19 +1,19 @@
 #[test]
-fn tok1_test() {
+fn left_parenthesis_test() {
     let source_code = "("; // should return (0, LParen, 1)
     let tokens = tokenize(source_code);
     assert_eq!(tokens, [(0, Token::LParen, 1)])
 }
 
 #[test]
-fn tok2_test() {
+fn both_parenthesis_test() {
     let source_code = "()";
     let tokens = tokenize(source_code);
     assert_eq!(tokens, [(0, Token::LParen, 1), (2, Token::RParen, 3)])
 }
 
 #[test]
-fn tok3_test() {
+fn parenthesis_and_numbers_test() {
     let source_code = "(1 2 3)";
     let tokens = tokenize(source_code);
     let expected = [
@@ -26,22 +26,37 @@ fn tok3_test() {
     assert_eq!(tokens, expected)
 }
 
+// TODO: Maybe compress functions `completed_string_test` and
+// `another_completed_string_test` into one? `FromIterable` isn't
+// implemented for `Vec<usize, Token<'_>, usize>` currently.
+// Same goes for `function_definition_test` and
+// `another_function_definition_test`.
 #[test]
-fn tok4_test() {
+fn completed_string_test() {
     let source_code = "\"string\"";
     let tokens = tokenize(source_code);
     assert_eq!(tokens, [(0, Token::String("string"), 1)])
 }
 
 #[test]
-fn tok5_test() {
+fn another_completed_string_test() {
     let source_code = "\"another string\"";
     let tokens = tokenize(source_code);
     assert_eq!(tokens, [(0, Token::String("another string"), 1)])
 }
 
+// TODO: This should break.
+// TODO: If the " is on the right, the assertion fails... only because the
+// tokenized input becomes "hello\"" (without the outer quotation marks).
 #[test]
-fn tok6_test() {
+fn incomplete_string_test() {
+    let source_code = "\"hello";
+    let tokens = tokenize(source_code);
+    assert_eq!(tokens, [(0, Token::String("hello"), 1)])
+}
+
+#[test]
+fn function_definition_test() {
     let source_code = "(define (id x) (x))";
     let tokens = tokenize(source_code);
     assert_eq!(
@@ -61,16 +76,8 @@ fn tok6_test() {
     )
 }
 
-// TODO: this should break
 #[test]
-fn tok7_test() {
-    let source_code = "\"hello";
-    let tokens = tokenize(source_code);
-    assert_eq!(tokens, [(0, Token::String("hello"), 1)])
-}
-
-#[test]
-fn tok8_test() {
+fn another_function_definition_test() {
     let source_code = "(define (k x) 12345)";
     let tokens = tokenize(source_code);
     assert_eq!(
@@ -89,7 +96,7 @@ fn tok8_test() {
 }
 
 #[test]
-fn tok9_test() {
+fn equality_test() {
     let source = "(= 3 x)";
     let tokens = tokenize(source);
     assert_eq!(
@@ -105,7 +112,7 @@ fn tok9_test() {
 }
 
 #[test]
-fn tok10_test() {
+fn number_test() {
     let source_code = "10.5";
     let tokens = tokenize(source_code);
     assert_eq!(tokens, [(0, Token::Num(10.5), 1)])
