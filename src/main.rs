@@ -20,22 +20,22 @@ mod token;
 use std::io;
 use std::io::prelude::*;
 
-fn input() -> String {
+fn input() -> io::Result<String> {
     print!("frd_lisp$");
-    io::stdout().flush().unwrap();
+    io::stdout().flush()?;
 
     let mut reply = String::new();
-    io::stdin().read_line(&mut reply).unwrap();
-    reply
+    io::stdin().read_line(&mut reply)?;
+    Ok(reply)
 }
 
-pub fn main() {
+pub fn main() -> io::Result<()> {
     println!("FRD LISP: REPL (interactive) MODE \n\n");
     let global_env = Rc::new(env::Env::new_global());
 
     //TODO use a real REPL crate for this
     loop {
-        let line = input();
+        let line = input()?;
         println!(">>> {:?}", repl_eval(&line, global_env.clone())[0]);
     }
 }
