@@ -1,7 +1,3 @@
-#[macro_use]
-extern crate log;
-extern crate env_logger;
-
 use std::rc::Rc;
 
 use frd_lisp::env;
@@ -37,6 +33,3 @@ fn repl_eval(source: &str, env: Rc<env::Env>) -> Vec<Rc<lisp_value::LispValue>> 
 
     eval::eval_program(&result.unwrap(), env)
 }
-
-#[test]
-fn main_test() {}
