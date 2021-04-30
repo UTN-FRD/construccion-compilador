@@ -13,7 +13,12 @@ default = ["wasm"]
 wasm = ["wasm-bindgen"]
 
 [lib]
+name = "frd_lisp"
 crate-type = ["rlib", "cdylib"]
+
+[[bin]]
+name = "frd_lisp_bin"
+path = "src/bin/main.rs"
 
 [build-dependencies]
 lalrpop = { version = "0.19.5", features = ["lexer"] }
