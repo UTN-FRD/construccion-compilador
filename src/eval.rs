@@ -12,10 +12,10 @@ use crate::env::Env;
 use crate::grammar;
 use crate::lisp_value::{Bool, Func, LispValue};
 use crate::token;
-use lalrpop_util::ParseError;
+use crate::ParseError;
 use std::rc::Rc;
 
-pub fn parse(source: &'_ str) -> Result<Vec<Expr>, ParseError<(), token::Token<'_>, &'static str>> {
+pub fn parse(source: &'_ str) -> Result<Vec<Expr>, ParseError> {
     let mut errors = Vec::new();
     debug!("eval {:?}", source);
     let parser = grammar::ProgramParser::new();
@@ -25,13 +25,13 @@ pub fn parse(source: &'_ str) -> Result<Vec<Expr>, ParseError<(), token::Token<'
 }
 
 #[allow(dead_code)]
-pub fn eval(source: &str) -> Vec<Rc<LispValue>> {
+pub fn eval(source: &str) -> Result<Vec<Rc<LispValue>>, ParseError> {
     let result = parse(source);
     assert!(result.is_ok(), "Syntax error {:?}", result);
     debug!("ast {:?}", result);
 
     let global_env = Rc::new(Env::new_global());
-    let result = eval_program(&result.unwrap(), global_env.clone());
+    let result = result.map(|value| eval_program(&value, global_env.clone()));
     debug!("env {:?}", global_env);
     debug!("result {:?}", result);
 

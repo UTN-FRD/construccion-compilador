@@ -10,11 +10,11 @@ pub struct LispVal(Vec<Rc<LispValue>>);
 impl LispVal {
     #[wasm_bindgen(constructor)]
     pub fn new(value: JsValue) -> Result<LispVal, JsValue> {
+        let parse_error = Err(JsValue::from_str("Parsing Failed"));
         if let Some(s) = value.as_string() {
-            let result = eval(&*s);
-            Ok(LispVal(result))
+            eval(&*s).map_or(parse_error, |val| Ok(LispVal(val)))
         } else {
-            Err(JsValue::from_str("Parsing Failed"))
+            parse_error
         }
     }
 

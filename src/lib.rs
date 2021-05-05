@@ -9,8 +9,6 @@ lalrpop_mod!(
     pub grammar
 ); // synthesized by LALRPOP
 
-use std::rc::Rc;
-
 pub mod ast;
 pub mod env;
 pub mod eval;
@@ -24,30 +22,19 @@ extern crate wasm_bindgen;
 #[cfg(feature = "wasm")]
 pub mod wasm;
 
+pub type ParseError<'a> = lalrpop_util::ParseError<(), token::Token<'a>, &'static str>;
+
 // TODO: This function should be exposed through Javascript.
-// TODO: Add type aliases so we don't write thess horrendous types?
-pub fn parse(
-    tokens: Vec<token::Token>,
-) -> Result<Vec<ast::Expr>, lalrpop_util::ParseError<(), token::Token<'_>, &'static str>> {
+pub fn parse(tokens: Vec<token::Token>) -> Result<Vec<ast::Expr>, ParseError> {
     let mut errors = Vec::new();
     let parser = grammar::ProgramParser::new();
 
     return parser.parse(&mut errors, tokens);
 }
 
-pub fn eval_file(file_name: &str) -> Vec<Rc<lisp_value::LispValue>> {
-    use std::fs::File;
-    use std::io::prelude::*;
-
-    let mut file = File::open(file_name).unwrap();
-    let mut contents = String::new();
-    file.read_to_string(&mut contents).unwrap();
-
-    eval::eval(&contents)
-}
-
 #[test]
 fn main_test() {
+    use std::rc::Rc;
     let _ = env_logger::try_init();
 
     fn eval_with_debugs(source: &str) -> Vec<Rc<lisp_value::LispValue>> {

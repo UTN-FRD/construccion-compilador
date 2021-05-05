@@ -1,44 +1,62 @@
 extern crate env_logger;
 extern crate log;
-use frd_lisp::eval_file;
+use frd_lisp::eval::eval;
+use std::fs::File;
+use std::io::Read;
+
+fn read_file(file_name: &str) -> String {
+    let mut file = File::open(file_name).expect("Can't open the file.");
+    let mut contents = String::new();
+    file.read_to_string(&mut contents)
+        .expect("Can't read the file.");
+    contents
+}
 
 #[test]
 fn fib_test() {
     let _ = env_logger::try_init();
-    let result = eval_file("./tests/fib.flp");
+    let source = read_file("./tests/fib.flp");
+    let result = eval(&source);
     println!("{:?}", result);
 
+    assert!(result.is_ok());
     // Compare strings as a way of avoiding re creating the expected array
-    let string_result = format!("{:?}", result);
+    let string_result = format!("{:?}", result.unwrap());
     assert_eq!(string_result, "[Nil, 1, 1, 2, 3, 5, 8, 13]");
 }
 
 #[test]
 fn id_test() {
     let _ = env_logger::try_init();
-    let result = eval_file("./tests/id.flp");
+    let source = read_file("./tests/id.flp");
+    let result = eval(&source);
     println!("{:?}", result);
 
-    let string_result = format!("{:?}", result);
+    assert!(result.is_ok());
+    let string_result = format!("{:?}", result.unwrap());
     assert_eq!(string_result, "[Nil, 1, 2, 3]");
 }
 
 #[test]
 fn variadic_functions_test() {
     let _ = env_logger::try_init();
-    let result = eval_file("./tests/variadic_functions.flp");
+    let source = read_file("./tests/variadic_functions.flp");
+    let result = eval(&source);
     println!("{:?}", result);
 
-    let string_result = format!("{:?}", result);
+    assert!(result.is_ok());
+    let string_result = format!("{:?}", result.unwrap());
     assert_eq!(string_result, "[15]");
 }
 
 #[test]
 fn higher_order_functions_test() {
     let _ = env_logger::try_init();
-    let result = eval_file("./tests/hofs.flp");
+    let source = read_file("./tests/hofs.flp");
+    let result = eval(&source);
     println!("{:?}", result);
 
-    let string_result = format!("{:?}", result);
+    assert!(result.is_ok());
+    let string_result = format!("{:?}", result.unwrap());
     assert_eq!(string_result, "[Nil, Nil, 2, 3, 4]");
 }
