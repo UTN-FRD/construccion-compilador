@@ -1,21 +1,8 @@
-#[macro_use]
-extern crate log;
-extern crate env_logger;
-use lalrpop_util::lalrpop_mod;
-
-lalrpop_mod!(
-    #[allow(clippy::all)]
-    #[allow(unused)]
-    pub grammar
-); // synthesized by LALRPOP
-
 use std::rc::Rc;
-mod ast;
-mod env;
-mod eval;
-mod intrinsics;
-mod lisp_value;
-mod token;
+
+use frd_lisp::env;
+use frd_lisp::eval;
+use frd_lisp::lisp_value;
 
 use std::io;
 use std::io::prelude::*;
@@ -46,6 +33,3 @@ fn repl_eval(source: &str, env: Rc<env::Env>) -> Vec<Rc<lisp_value::LispValue>> 
 
     eval::eval_program(&result.unwrap(), env)
 }
-
-#[test]
-fn main_test() {}

@@ -12,9 +12,9 @@ lalrpop_mod!(
 use std::rc::Rc;
 
 pub mod ast;
-mod env;
+pub mod env;
 pub mod eval;
-mod intrinsics;
+pub mod intrinsics;
 pub mod lisp_value;
 pub mod token;
 
