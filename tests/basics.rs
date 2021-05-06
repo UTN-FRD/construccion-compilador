@@ -1,6 +1,6 @@
 extern crate env_logger;
 extern crate log;
-use frd_lisp::eval::eval;
+use frd_lisp::eval::{eval, parse};
 use std::fs::File;
 use std::io::Read;
 
@@ -16,7 +16,8 @@ fn read_file(file_name: &str) -> String {
 fn fib_test() {
     let _ = env_logger::try_init();
     let source = read_file("./tests/fib.flp");
-    let result = eval(&source);
+    let ast = parse(&source).unwrap();
+    let result = eval(ast);
     println!("{:?}", result);
 
     assert!(result.is_ok());
@@ -29,7 +30,8 @@ fn fib_test() {
 fn id_test() {
     let _ = env_logger::try_init();
     let source = read_file("./tests/id.flp");
-    let result = eval(&source);
+    let ast = parse(&source).unwrap();
+    let result = eval(ast);
     println!("{:?}", result);
 
     assert!(result.is_ok());
@@ -41,7 +43,8 @@ fn id_test() {
 fn variadic_functions_test() {
     let _ = env_logger::try_init();
     let source = read_file("./tests/variadic_functions.flp");
-    let result = eval(&source);
+    let ast = parse(&source).unwrap();
+    let result = eval(ast);
     println!("{:?}", result);
 
     assert!(result.is_ok());
@@ -53,7 +56,8 @@ fn variadic_functions_test() {
 fn higher_order_functions_test() {
     let _ = env_logger::try_init();
     let source = read_file("./tests/hofs.flp");
-    let result = eval(&source);
+    let ast = parse(&source).unwrap();
+    let result = eval(ast);
     println!("{:?}", result);
 
     assert!(result.is_ok());

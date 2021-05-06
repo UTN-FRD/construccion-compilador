@@ -63,7 +63,13 @@ pub fn tokenize(s: &str) -> Vec<(usize, Token, usize)> {
                         }
                     });
                     lookahead = next;
-                    tokens.push(Token::Num(f64::from_str(&s[ci..slice_end]).unwrap()));
+                    // TODO: return an error
+                    let parsed_float = f64::from_str(&s[ci..slice_end]);
+                    let token = match parsed_float {
+                        Ok(num) => Token::Num(num),
+                        Err(e) => panic!("{}", e),
+                    };
+                    tokens.push(token);
                     continue;
                 }
                 _ if c.is_alphanumeric() => {

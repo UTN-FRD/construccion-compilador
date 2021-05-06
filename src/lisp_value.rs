@@ -20,10 +20,10 @@ pub enum LispValue {
 }
 
 impl LispValue {
-    pub fn unwrap_number(&self) -> &f64 {
+    pub fn get_number(&self) -> Option<&f64> {
         match self {
-            LispValue::Number(ref num) => num,
-            _ => panic!("BBBB"),
+            LispValue::Number(ref num) => Some(num),
+            _ => None,
         }
     }
 }

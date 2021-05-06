@@ -50,7 +50,7 @@ fn main_test() {
         println!("RESULT {:?}", result);
         println!("GLOBAL ENV {:#?}", global_env);
 
-        result
+        result.unwrap()
     }
 
     let sources = vec![

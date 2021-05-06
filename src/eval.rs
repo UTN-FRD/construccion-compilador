@@ -31,26 +31,21 @@ pub fn parse(source: &'_ str) -> Result<Vec<Expr>, ParseError> {
     parser.parse(&mut errors, tokens)
 }
 
-#[allow(dead_code)]
-pub fn eval(source: &str) -> Result<Vec<Rc<LispValue>>, ParseError> {
-    let result = parse(source);
-    assert!(result.is_ok(), "Syntax error {:?}", result);
-    debug!("ast {:?}", result);
-
+pub fn eval(exprs: Vec<Expr>) -> Result<Vec<Rc<LispValue>>, EvalError> {
     let global_env = Rc::new(Env::new_global());
-    let result = result.map(|value| eval_program(&value, global_env.clone()));
+    let result = eval_program(&exprs, global_env.clone());
     debug!("env {:?}", global_env);
     debug!("result {:?}", result);
 
     result
 }
 
-pub fn eval_program(program: &[Expr], env: Rc<Env>) -> Vec<Rc<LispValue>> {
+pub fn eval_program(program: &[Expr], env: Rc<Env>) -> Result<Vec<Rc<LispValue>>, EvalError> {
     debug!("eval {:?}", program);
 
-    let result: Vec<Rc<LispValue>> = program
+    let result: Result<Vec<Rc<LispValue>>, EvalError> = program
         .iter()
-        .flat_map(|expr| eval_expression(expr, env.clone()))
+        .map(|expr| eval_expression(expr, env.clone()))
         .collect();
 
     debug!("eval_program END");
