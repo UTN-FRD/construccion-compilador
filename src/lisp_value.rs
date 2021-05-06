@@ -5,7 +5,7 @@ use std::rc::Rc;
 
 use crate::ast::Expr;
 use crate::env::Env;
-use crate::eval::eval_expression;
+use crate::eval::{EvalError, eval_expression};
 
 #[derive(Clone)]
 pub enum LispValue {
@@ -109,7 +109,7 @@ impl Func {
         }
     }
 
-    pub fn call(&self, arg_values: Vec<Rc<LispValue>>) -> Rc<LispValue> {
+    pub fn call(&self, arg_values: Vec<Rc<LispValue>>) -> Result<Rc<LispValue>, EvalError> {
         let local_env: HashMap<String, Rc<LispValue>> =
             self.arg_names.clone().into_iter().zip(arg_values).collect();
 

@@ -3,10 +3,6 @@
 //- probably we would want to generate an id for each function instance to see how they open and close
 //- better structure for what and how we log it, arguments, return values, env changes, etc
 //
-//
-//TODO
-//- instead of Panic! on every error it would nice to a hace Result infra
-//
 use crate::ast::{Atom, Expr};
 use crate::env::Env;
 use crate::grammar;
@@ -14,6 +10,17 @@ use crate::lisp_value::{Bool, Func, LispValue};
 use crate::token;
 use crate::ParseError;
 use std::rc::Rc;
+use thiserror::Error;
+
+#[derive(Error, Debug)]
+pub enum EvalError {
+    #[error("Symbol `{symbol:?}` not found.")]
+    SymbolNotFound { symbol: String },
+    #[error("Unexpected Value in the function name position.")]
+    UnexpectedFunctionValue,
+    #[error("Unhandled Error.")]
+    UnhandledError,
+}
 
 pub fn parse(source: &'_ str) -> Result<Vec<Expr>, ParseError> {
     let mut errors = Vec::new();
@@ -43,14 +50,14 @@ pub fn eval_program(program: &[Expr], env: Rc<Env>) -> Vec<Rc<LispValue>> {
 
     let result: Vec<Rc<LispValue>> = program
         .iter()
-        .map(|expr| eval_expression(expr, env.clone()))
+        .flat_map(|expr| eval_expression(expr, env.clone()))
         .collect();
 
     debug!("eval_program END");
     result
 }
 
-pub fn eval_expression(expression: &Expr, env: Rc<Env>) -> Rc<LispValue> {
+pub fn eval_expression(expression: &Expr, env: Rc<Env>) -> Result<Rc<LispValue>, EvalError> {
     debug!("eval_expression {:?}", expression);
 
     let result = match expression {
@@ -72,10 +79,10 @@ pub fn eval_expression(expression: &Expr, env: Rc<Env>) -> Rc<LispValue> {
 }
 
 // evaluates a list
-pub fn eval_list(list: &[Expr], env: Rc<Env>) -> Rc<LispValue> {
+pub fn eval_list(list: &[Expr], env: Rc<Env>) -> Result<Rc<LispValue>, EvalError> {
     debug!("eval_list {:?}", list);
     if list.is_empty() {
-        return Rc::new(LispValue::Nil);
+        return Ok(Rc::new(LispValue::Nil));
     }
 
     let mut list = list.to_vec();
@@ -84,27 +91,27 @@ pub fn eval_list(list: &[Expr], env: Rc<Env>) -> Rc<LispValue> {
     match first {
         Expr::Atom(atom) => {
             let id = atom.expect_id("Unexpected non id");
-            let func = env
-                .get(&id)
-                .unwrap_or_else(|| panic!("Symbol `{}` not found", id));
+            let func = env.get(&id).ok_or(EvalError::SymbolNotFound {
+                symbol: id.to_string(),
+            });
             let arg_values: Vec<Rc<LispValue>> = list
                 .iter()
-                .map(|expr| eval_expression(expr, env.clone()))
+                .flat_map(|expr| eval_expression(expr, env.clone()))
                 .collect();
 
-            match *func {
-                LispValue::Intrinsic(ref func) => {
+            match func.as_deref() {
+                Ok(LispValue::Intrinsic(ref func)) => {
                     let res = func(&arg_values);
                     debug!("eval_list END Intrinsice {:?}", res);
-                    res
+                    Ok(res)
                 }
 
-                LispValue::Func(ref func) => {
+                Ok(LispValue::Func(ref func)) => {
                     let res = func.call(arg_values);
                     debug!("eval_list END FUNC {:?}", res);
                     res
                 }
-                _ => panic!("Unexpected Value in the Function name position"),
+                _ => Err(EvalError::UnexpectedFunctionValue),
             }
         }
         //Expr::List(ref list) =>  {
@@ -112,21 +119,21 @@ pub fn eval_list(list: &[Expr], env: Rc<Env>) -> Rc<LispValue> {
         // and do something
         //let first = eval_list()
         //}
-        _ => panic!("Unhandled"),
+        _ => Err(EvalError::UnhandledError),
     }
 }
 
-pub fn eval_atom(atom: &Atom, env: Rc<Env>) -> Rc<LispValue> {
+pub fn eval_atom(atom: &Atom, env: Rc<Env>) -> Result<Rc<LispValue>, EvalError> {
     debug!("eval_atom {:?}", atom);
     match atom {
-        Atom::Number(num) => Rc::new(LispValue::Number(*num)),
-        Atom::StringAtom(s) => Rc::new(LispValue::StringValue(s.to_string())),
+        Atom::Number(num) => Ok(Rc::new(LispValue::Number(*num))),
+        Atom::StringAtom(s) => Ok(Rc::new(LispValue::StringValue(s.to_string()))),
         Atom::Id(id) => match id.as_str() {
-            "true" => Rc::new(LispValue::Bool(Bool::True)),
-            "false" => Rc::new(LispValue::Bool(Bool::False)),
-            _ => env
-                .get(&id)
-                .unwrap_or_else(|| panic!("Symbol {} not found", id)),
+            "true" => Ok(Rc::new(LispValue::Bool(Bool::True))),
+            "false" => Ok(Rc::new(LispValue::Bool(Bool::False))),
+            _ => env.get(&id).ok_or(EvalError::SymbolNotFound {
+                symbol: id.to_string(),
+            }),
         },
     }
 }
@@ -136,18 +143,22 @@ pub fn eval_define_function(
     arg_names: Vec<String>,
     body: Vec<Expr>,
     env: Rc<Env>,
-) -> Rc<LispValue> {
+) -> Result<Rc<LispValue>, EvalError> {
     let func = Func::new(fn_name, arg_names, body, env.clone());
     env.set(func.get_name().clone(), Rc::new(LispValue::Func(func)));
 
-    Rc::new(LispValue::Nil)
+    Ok(Rc::new(LispValue::Nil))
 }
 
-pub fn eval_define_variable(var_name: &str, var_value: &Expr, env: Rc<Env>) -> Rc<LispValue> {
-    let value = eval_expression(var_value, env.clone());
-    env.set(var_name.to_string(), value);
+pub fn eval_define_variable(
+    var_name: &str,
+    var_value: &Expr,
+    env: Rc<Env>,
+) -> Result<Rc<LispValue>, EvalError> {
+    let res = eval_expression(var_value, env.clone()).map(|val| env.set(var_name.to_string(), val));
+    debug!("defined variable result: {:?}", res);
 
-    Rc::new(LispValue::Nil)
+    Ok(Rc::new(LispValue::Nil))
 }
 
 pub fn eval_if(
@@ -155,20 +166,22 @@ pub fn eval_if(
     positive: &Expr,
     negative: &Option<Expr>,
     env: Rc<Env>,
-) -> Rc<LispValue> {
+) -> Result<Rc<LispValue>, EvalError> {
     let cond_value = eval_expression(cond, env.clone());
-    if let LispValue::Bool(ref value) = *cond_value {
+    if let Ok(LispValue::Bool(ref value)) = cond_value.as_deref() {
         match value {
             Bool::True => eval_expression(positive, env),
             Bool::False => {
                 if negative.is_none() {
-                    return Rc::new(LispValue::Nil);
+                    return Ok(Rc::new(LispValue::Nil));
                 }
-
-                eval_expression(negative.as_ref().unwrap(), env)
+                match negative.as_ref() {
+                    Some(bool_expr) => eval_expression(bool_expr, env),
+                    None => Err(EvalError::UnhandledError),
+                }
             }
         }
     } else {
-        panic!("Still don't know how to coerce")
+        Err(EvalError::UnhandledError) // TODO: should we coerce values to booleans?
     }
 }
