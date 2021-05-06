@@ -8,3 +8,7 @@ build:
 
 run:
 	bash -c "cd site/ && npm run start"
+
+
+clippy:
+	cargo +nightly clippy
