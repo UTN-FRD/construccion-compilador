@@ -5,7 +5,7 @@ use std::rc::Rc;
 
 use crate::ast::Expr;
 use crate::env::Env;
-use crate::eval::{EvalError, eval_expression};
+use crate::eval::{eval_expression, EvalError};
 
 #[derive(Clone)]
 pub enum LispValue {

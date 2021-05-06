@@ -29,7 +29,7 @@ pub fn parse(tokens: Vec<token::Token>) -> Result<Vec<ast::Expr>, ParseError> {
     let mut errors = Vec::new();
     let parser = grammar::ProgramParser::new();
 
-    return parser.parse(&mut errors, tokens);
+    parser.parse(&mut errors, tokens)
 }
 
 #[test]
