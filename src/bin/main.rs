@@ -1,8 +1,7 @@
 use std::rc::Rc;
 
 use frd_lisp::env;
-use frd_lisp::lisp_value;
-use frd_lisp::{eval, eval::EvalError};
+use frd_lisp::eval;
 
 use std::io;
 use std::io::prelude::*;
@@ -23,14 +22,12 @@ pub fn main() -> io::Result<()> {
     //TODO use a real REPL crate for this
     loop {
         let line = input()?;
-        match repl_eval(&line, global_env.clone()) {
-            Ok(values) => println!(">>> {:?}", values[0]),
-            Err(error) => println!("ERROR: {}", error),
+        match eval::parse(&line) {
+            Ok(ast) => match eval::eval_program(&ast, global_env.clone()) {
+                Ok(values) => println!("{}", values[0]),
+                Err(eval_error) => println!("ERROR: {}", eval_error),
+            },
+            Err(error) => println!("ERROR: {:?}", error),
         }
     }
-}
-
-fn repl_eval(source: &str, env: Rc<env::Env>) -> Result<Vec<Rc<lisp_value::LispValue>>, EvalError> {
-    let result = eval::parse(source);
-    eval::eval_program(&result.unwrap(), env) // TODO: remove this unwrap
 }

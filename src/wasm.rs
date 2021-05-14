@@ -19,6 +19,8 @@ impl LispVal {
         }
     }
 
+    // avoid clippy warning
+    #[allow(clippy::inherent_to_string)]
     #[wasm_bindgen(method, js_name = toString)]
     pub fn to_string(&self) -> String {
         match self.0.last() {
