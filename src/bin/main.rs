@@ -6,8 +6,6 @@ use frd_lisp::eval;
 use std::io;
 use std::io::prelude::*;
 
-use frd_lisp::{tokenize, parse};
-
 fn input() -> String {
     print!("frd_lisp$");
     io::stdout().flush().unwrap();
