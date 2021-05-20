@@ -34,7 +34,7 @@ pub fn eval_file(file_name: &str) -> Vec<Rc<lisp_value::LispValue>> {
     let mut contents = String::new();
     file.read_to_string(&mut contents).unwrap();
 
-    eval::eval(&contents)
+    eval::eval(&contents, None)
 }
 
 #[test]
@@ -48,6 +48,8 @@ fn main_test() {
         println!("AST {:?}", result);
         assert!(result.is_ok());
 
+        // TODO: These `env` calls can be avoided since `eval` creates its ows environment if
+        // necessary.
         // Eval
         let global_env = Rc::new(env::Env::new_global());
         let result = eval::eval_program(&result.unwrap(), global_env.clone());
