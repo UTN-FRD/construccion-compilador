@@ -17,17 +17,6 @@ extern crate wasm_bindgen;
 #[cfg(feature = "wasm")]
 pub mod wasm;
 
-// TODO: This function should be exposed through Javascript.
-// TODO: Add type aliases so we don't write thess horrendous types?
-pub fn parse(
-    tokens: Vec<token::Token>,
-) -> Result<Vec<ast::Expr>, lalrpop_util::ParseError<(), token::Token<'_>, &'static str>> {
-    let mut errors = Vec::new();
-    let parser = grammar::ProgramParser::new();
-
-    return parser.parse(&mut errors, tokens);
-}
-
 pub fn eval_file(file_name: &str) -> Vec<Rc<lisp_value::LispValue>> {
     use std::fs::File;
     use std::io::prelude::*;
