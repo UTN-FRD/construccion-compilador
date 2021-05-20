@@ -2,10 +2,11 @@ use std::rc::Rc;
 
 use frd_lisp::env;
 use frd_lisp::eval;
-use frd_lisp::lisp_value;
 
 use std::io;
 use std::io::prelude::*;
+
+use frd_lisp::{tokenize, parse};
 
 fn input() -> String {
     print!("frd_lisp$");
