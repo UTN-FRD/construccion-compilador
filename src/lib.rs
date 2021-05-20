@@ -1,22 +1,15 @@
 #[macro_use]
 extern crate log;
 extern crate env_logger;
-use lalrpop_util::lalrpop_mod;
 
-lalrpop_mod!(
-    #[allow(clippy::all)]
-    #[allow(unused)]
-    pub grammar
-); // synthesized by LALRPOP
 
 use std::rc::Rc;
 
 pub mod ast;
 pub mod env;
 pub mod eval;
-pub mod intrinsics;
-pub mod lisp_value;
-pub mod token;
+mod intrinsics;
+mod lisp_value;
 
 #[cfg(feature = "wasm")]
 extern crate wasm_bindgen;
