@@ -7,14 +7,13 @@
 //TODO
 //- instead of Panic! on every error it would nice to a hace Result infra
 //
-use crate::ast::{Atom, Expr};
+use crate::ast::{Atom};
 use crate::env::Env;
-use crate::grammar;
 use crate::lisp_value::{Bool, Func, LispValue};
-use crate::token;
-use lalrpop_util::ParseError;
 use std::rc::Rc;
 
+use crate::{tokenize, Token};
+use crate::{parse, Expr};
 
 #[allow(dead_code)]
 pub fn eval(source: &str) -> Vec<Rc<LispValue>> {
