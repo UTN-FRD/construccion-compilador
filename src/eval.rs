@@ -7,12 +7,12 @@
 //TODO
 //- instead of Panic! on every error it would nice to a hace Result infra
 //
-use crate::ast::{Atom};
+use crate::ast::Atom;
 use crate::env::Env;
 use crate::lisp_value::{Bool, Func, LispValue};
 use std::rc::Rc;
 
-use crate::{tokenize};
+use crate::tokenize;
 use crate::{parse, Expr};
 
 // TODO: The `env` parameter is pretty ugly, but Rust doesn't (currently) support default

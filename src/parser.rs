@@ -1,6 +1,6 @@
-use lalrpop_util::lalrpop_mod;
-use crate::Token;
 use crate::Expr;
+use crate::Token;
+use lalrpop_util::lalrpop_mod;
 
 // This macro synthetises the `grammar` module which will be used to parse files.
 lalrpop_mod!(
