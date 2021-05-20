@@ -2,6 +2,15 @@
 extern crate log;
 extern crate env_logger;
 
+mod token;
+mod parser;
+
+// TODO: Is it convenient to expose `Token` and `Expr` directly instead of the module?
+pub use ast::Expr as Expr;
+pub use ast::Atom as Atom;
+pub use token::Token as Token;
+pub use token::tokenize as tokenize;
+pub use parser::parse as parse;
 
 use std::rc::Rc;
 
