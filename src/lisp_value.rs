@@ -117,10 +117,12 @@ impl Func {
         let env = Rc::new(self.env.new(self.env.clone(), local_env));
 
         // TODO evaluate multiple Expr bodies
-        let result = eval_expression(&self.body[0], env.clone());
+        let result = eval_program(&self.body, env.clone());
         debug!("func call {:?}", env);
         debug!("func result {:?}", result);
-        result
+
+        // TODO: Review this! Is this moving? Referencing? Careful!
+        result[0].clone()
     }
 
     pub fn get_name(&self) -> &String {
