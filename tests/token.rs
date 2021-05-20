@@ -1,5 +1,4 @@
-use frd_lisp::token::tokenize;
-use frd_lisp::token::Token;
+use frd_lisp::{tokenize, Token};
 
 #[test]
 fn left_parenthesis_test() {
