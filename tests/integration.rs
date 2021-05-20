@@ -1,7 +1,7 @@
 // TODO: These tests use `eval::parse` which did both tokenizing and parsing.
 
 use frd_lisp::ast::Atom;
-use frd_lisp::{tokenize, parse, Expr};
+use frd_lisp::{parse, tokenize, Expr};
 
 #[test]
 fn parse_eq_operation() {
