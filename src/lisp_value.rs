@@ -4,7 +4,6 @@ use std::fmt;
 use std::rc::Rc;
 
 use crate::env::Env;
-use crate::eval::eval_expression;
 use crate::eval::eval_program;
 
 use crate::Expr;
