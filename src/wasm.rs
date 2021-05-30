@@ -11,7 +11,7 @@ impl LispVal {
     #[wasm_bindgen(constructor)]
     pub fn new(value: JsValue) -> Result<LispVal, JsValue> {
         if let Some(s) = value.as_string() {
-            let result = eval(&*s);
+            let result = eval(&*s, None);
             Ok(LispVal(result))
         } else {
             Err(JsValue::from_str("Parsing Failed"))

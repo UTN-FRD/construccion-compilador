@@ -7,32 +7,46 @@
 //TODO
 //- instead of Panic! on every error it would nice to a hace Result infra
 //
-use crate::ast::{Atom, Expr};
+use crate::ast::Atom;
 use crate::env::Env;
-use crate::grammar;
 use crate::lisp_value::{Bool, Func, LispValue};
-use crate::token;
-use lalrpop_util::ParseError;
 use std::rc::Rc;
 
-pub fn parse(source: &'_ str) -> Result<Vec<Expr>, ParseError<(), token::Token<'_>, &'static str>> {
-    let mut errors = Vec::new();
-    debug!("eval {:?}", source);
-    let parser = grammar::ProgramParser::new();
-    let tokens = token::tokenize(source);
-    let tokens: Vec<token::Token> = tokens.into_iter().map(|(_, tok, _)| tok).collect();
-    parser.parse(&mut errors, tokens)
-}
+use crate::tokenize;
+use crate::{parse, Expr};
 
+// TODO: The `env` parameter is pretty ugly, but Rust doesn't (currently) support default
+// arguments.
+//
+// TODO: This function is still doing a lot of things instead of simply evaluating a syntax
+// tree.
 #[allow(dead_code)]
-pub fn eval(source: &str) -> Vec<Rc<LispValue>> {
-    let result = parse(source);
-    assert!(result.is_ok(), "Syntax error {:?}", result);
-    debug!("ast {:?}", result);
+pub fn eval(source: &str, env: Option<Rc<Env>>) -> Vec<Rc<LispValue>> {
+    // Convert the input string into a stream of tokens and their start & end positions.
+    let tokens = tokenize(source);
 
-    let global_env = Rc::new(Env::new_global());
-    let result = eval_program(&result.unwrap(), global_env.clone());
-    debug!("env {:?}", global_env);
+    // Discard start & end positions from the vector of tuples, leaving only `Token`s.
+    let tokens = tokens.into_iter().map(|(_, token, _)| token).collect();
+    debug!("tokens: {:?}", tokens);
+
+    // Convert the stream of tokens into an AST.
+    let ast = parse(tokens);
+    debug!("ast {:?}", ast);
+
+    // TODO: Is this assert's location correct? What happens if this is called expecting a
+    // failure when testing?
+    assert!(ast.is_ok(), "Syntax error {:?}", ast);
+
+    // NOTE: Made some changes (mainly, `global_env` became `env`), and the call to `clone`
+    // disappeared.
+    //
+    // Prefer `unwrap_or_else` over `unwrap_or` due to lazy evaluation. If we have an `env` value
+    // already, there's no need to create a new environment.
+    let env = env.unwrap_or_else(|| Rc::new(Env::new_global()));
+    debug!("env {:?}", env);
+
+    // Evaluate the AST.
+    let result = eval_program(&ast.unwrap(), env.clone());
     debug!("result {:?}", result);
 
     result
