@@ -113,10 +113,22 @@ pub fn eval_list(list: &[Expr], env: Rc<Env>) -> Rc<LispValue> {
                     res
                 }
 
+                // The matched function isn't part of the compiler's intrinsic functions.
                 LispValue::Func(ref func) => {
-                    let res = func.call(arg_values);
-                    debug!("eval_list END FUNC {:?}", res);
-                    res
+                    let arg_names = func.get_arg_names().clone();
+
+                    // TODO: Don't we need to bring `std::collections::HashMap` to scope?
+                    //
+                    // TODO: Why so many `Env`s? Can we simplify this?
+                    let local_env = arg_names.into_iter().zip(arg_values).collect();
+                    let func_env = func.get_env();
+                    let env = Rc::new(func_env.new(func_env.clone(), local_env));
+
+                    // TODO: Is it correct to take only the first element of the resulting
+                    // vector?
+                    //
+                    // TODO: Can this evaluate multiple `Expr` bodies?
+                    eval_program(func.get_body(), env.clone())[0].clone()
                 }
                 _ => panic!("Unexpected Value in the Function name position"),
             }
