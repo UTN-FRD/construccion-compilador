@@ -22,12 +22,9 @@ pub fn main() -> io::Result<()> {
     //TODO use a real REPL crate for this
     loop {
         let line = input()?;
-        match eval::parse(&line) {
-            Ok(ast) => match eval::eval_program(&ast, global_env.clone()) {
-                Ok(values) => println!("{}", values[0]),
-                Err(eval_error) => println!("ERROR: {}", eval_error),
-            },
-            Err(error) => println!("ERROR: {:?}", error),
+        match eval::eval(&line, Some(global_env.clone())) {
+            Ok(value) => println!(">>> {:?}", value.first()),
+            Err(_eval_error) => println!("Error"), // TODO: build the error msg
         }
     }
 }

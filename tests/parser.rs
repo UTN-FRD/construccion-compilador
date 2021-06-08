@@ -5,13 +5,12 @@
 
 use frd_lisp::ast;
 use frd_lisp::parse;
-use frd_lisp::token;
+use frd_lisp::Token;
 
 #[test]
 fn addition_test() {
     use ast::Atom;
     use ast::Expr;
-    use token::Token;
 
     let expected = vec![
         // TODO: Should it use a (yet to be created) `Atom::Op`?
@@ -31,7 +30,6 @@ fn addition_test() {
 fn list_addition_test() {
     use ast::Atom;
     use ast::Expr;
-    use token::Token;
 
     let expected = vec![Expr::List(vec![
         Expr::Atom(Atom::Id("+".to_string())),

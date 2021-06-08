@@ -1,6 +1,6 @@
 use std::str::FromStr;
-use crate::ast::{Expr, Atom};
-use crate::token::Token;
+use crate::ast::Atom;
+use crate::{ Token, Expr };
 use lalrpop_util::ErrorRecovery;
 
 grammar<'err, 'input>(errors: &'err mut Vec<ErrorRecovery<usize, Token<'input>, &'static str>>);
