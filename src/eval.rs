@@ -1,11 +1,8 @@
+use crate::LispError;
 //TODO
 //- create a proper debug infra with a better strucure
 //- probably we would want to generate an id for each function instance to see how they open and close
 //- better structure for what and how we log it, arguments, return values, env changes, etc
-//
-//
-//TODO
-//- instead of Panic! on every error it would nice to a hace Result infra
 //
 use crate::ast::Atom;
 use crate::env::Env;
@@ -30,8 +27,7 @@ pub enum EvalError {
 //
 // TODO: This function is still doing a lot of things instead of simply evaluating a syntax
 // tree.
-#[allow(dead_code)]
-pub fn eval(source: &str, env: Option<Rc<Env>>) -> Result<Vec<Rc<LispValue>>, EvalError> {
+pub fn eval(source: &str, env: Option<Rc<Env>>) -> Result<Vec<Rc<LispValue>>, LispError> {
     // Convert the input string into a stream of tokens and their start & end positions.
     let tokens = tokenize(source);
 
@@ -43,10 +39,6 @@ pub fn eval(source: &str, env: Option<Rc<Env>>) -> Result<Vec<Rc<LispValue>>, Ev
     let ast = parse(tokens);
     debug!("ast {:?}", ast);
 
-    // TODO: Is this assert's location correct? What happens if this is called expecting a
-    // failure when testing?
-    assert!(ast.is_ok(), "Syntax error {:?}", ast);
-
     // NOTE: Made some changes (mainly, `global_env` became `env`), and the call to `clone`
     // disappeared.
     //
@@ -56,10 +48,16 @@ pub fn eval(source: &str, env: Option<Rc<Env>>) -> Result<Vec<Rc<LispValue>>, Ev
     debug!("env {:?}", env);
 
     // Evaluate the AST.
-    let result = eval_program(&ast.unwrap(), env);
-    debug!("result {:?}", result);
-
-    result
+    match ast.clone() {
+        Ok(exprs) => match eval_program(&exprs, env) {
+            Ok(value) => {
+                debug!("result {:?}", value);
+                Ok(value)
+            }
+            Err(eval_error) => Err(LispError::EvaluationError(eval_error)),
+        },
+        Err(parse_error) => Err(LispError::ParserError(parse_error.clone())),
+    }
 }
 
 pub fn eval_program(program: &[Expr], env: Rc<Env>) -> Result<Vec<Rc<LispValue>>, EvalError> {

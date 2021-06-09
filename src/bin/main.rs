@@ -23,8 +23,8 @@ pub fn main() -> io::Result<()> {
     loop {
         let line = input()?;
         match eval::eval(&line, Some(global_env.clone())) {
-            Ok(value) => println!(">>> {:?}", value.first()),
-            Err(_eval_error) => println!("Error"), // TODO: build the error msg
+            Ok(value) => println!(">>> {:?}", value.first().unwrap()),
+            Err(lisp_error) => println!("Error: {:?}", lisp_error),
         }
     }
 }

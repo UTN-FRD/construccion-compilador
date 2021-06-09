@@ -8,6 +8,7 @@ mod token;
 // TODO: Is it convenient to expose `Token` and `Expr` directly instead of the module?
 pub use ast::Atom;
 pub use ast::Expr;
+use eval::EvalError;
 pub use parser::parse;
 pub use token::tokenize;
 pub use token::Token;
@@ -26,13 +27,9 @@ pub mod wasm;
 
 pub type ParseError<'a> = lalrpop_util::ParseError<(), token::Token<'a>, &'static str>;
 
-// pub fn eval_file(file_name: &str) -> Vec<Rc<lisp_value::LispValue>> {
-//     use std::fs::File;
-//     use std::io::prelude::*;
-
-//     let mut file = File::open(file_name).unwrap();
-//     let mut contents = String::new();
-//     file.read_to_string(&mut contents).unwrap();
-
-//     eval::eval(&contents, None)
-// }
+#[derive(Debug)]
+pub enum LispError<'a> {
+	// TODO: add a LexerError
+	ParserError(ParseError<'a>),
+	EvaluationError(EvalError),
+}
