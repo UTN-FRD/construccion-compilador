@@ -2,7 +2,6 @@ use std::rc::Rc;
 
 use frd_lisp::env;
 use frd_lisp::eval;
-use frd_lisp::lisp_value;
 
 use std::io;
 use std::io::prelude::*;
@@ -23,13 +22,9 @@ pub fn main() {
     //TODO use a real REPL crate for this
     loop {
         let line = input();
-        println!(">>> {:?}", repl_eval(&line, global_env.clone())[0]);
+        let result = eval::eval(&line, Some(global_env.clone()));
+
+        // Display the evaluator's output.
+        println!(">>> {:?}", result.first());
     }
-}
-
-fn repl_eval(source: &str, env: Rc<env::Env>) -> Vec<Rc<lisp_value::LispValue>> {
-    let result = eval::parse(source);
-    assert!(result.is_ok(), "Syntax error {:?}", result);
-
-    eval::eval_program(&result.unwrap(), env)
 }
