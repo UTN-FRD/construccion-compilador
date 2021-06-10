@@ -1,47 +1,51 @@
-import { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Route } from "react-router-dom";
-import { AuthProvider } from './components/Auth';
-import Home from './components/Home'
-import SignUp from './components/SignUp'
-import Login from './components/Login'
-import PrivateRoute from './components/PrivateRoute'
-import Private from './components/Private'
+import { useContext, useEffect, useState } from 'react';
+import { BrowserRouter as Router } from "react-router-dom";
+import { PublicRoute, PrivateRoute, ROUTES } from './components/routes'
+import { AuthContext } from './components/Auth';
 import Editor from './components/Editor';
+import SignUp from './components/SignUp'
+import LogIn from './components/LogIn'
+import firebase from './firebase';
+import TopBar from './components/TopBar/TopBar';
+import Container from '@material-ui/core/Container';
 
 function App() {
   const [wasm, setWasm] = useState({});
+  const [loading, setLoading] = useState(true);
+  const { setCurrentUser } = useContext(AuthContext);
 
   useEffect(() => {
     const loadWasm = async () => {
       try {
+        // first, load wasm package
         const wasm = await import('./pkg');
-        setWasm(wasm)
-      } catch(err) {
-        console.error(`Unexpected error in loadWasm. [Message: ${err.message}]`);
+        // then, get user state (logged in or logged out)
+        firebase.auth().onAuthStateChanged(user => {
+          setWasm(wasm);
+          setCurrentUser(user);
+          setLoading(false);
+        });
+      } catch (error) {
+        console.error(`Unexpected error. [Message: ${error.message}]`);
+        setLoading(false);
       }
     };
+
     loadWasm();
   }, []);
-
-  useEffect(() => {
-    if (Object.values(wasm).length) {
-      const parsedValue = new wasm.LispVal("(+ 2 5)").toString();
-      console.log(parsedValue);
-    }
-  }, [wasm])
   
+  if (loading) return <p>Loading...</p>
+
   return (
-    <AuthProvider>
-      <Router>
-        <div>
-          <Route exact path="/" component={Home} />
-          <Route exact path="/login" component={Login} />
-          <Route exact path="/signup" component={SignUp} />
-          <Route exact path="/editor" component={() => <Editor wasm={wasm} />} />
-          <PrivateRoute exact path="/private" component={Private} />
-        </div>
-      </Router>
-    </AuthProvider>
+    !loading && 
+    <Router>
+      <TopBar />
+      <Container maxWidth="lg">
+        <PublicRoute exact path={ROUTES.HOME} component={() => <Editor wasm={wasm} />} />
+        <PublicRoute exact restricted path={ROUTES.SIGNUP} component={SignUp} />
+        <PublicRoute exact restricted path={ROUTES.LOGIN} component={LogIn} />
+      </Container>
+    </Router>
   );
 }
 
