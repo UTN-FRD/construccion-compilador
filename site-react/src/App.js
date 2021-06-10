@@ -4,7 +4,7 @@ import { PublicRoute, PrivateRoute, ROUTES } from './components/routes'
 import { AuthContext } from './components/Auth';
 import Editor from './components/Editor';
 import SignUp from './components/SignUp';
-import LogIn from './components/LogIn';
+import LogIn from './components/Login';
 import firebase from './firebase';
 import TopBar from './components/TopBar/TopBar';
 import Container from '@material-ui/core/Container';
