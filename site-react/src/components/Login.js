@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import firebase from "../firebase.js";
 import { ROUTES } from "./routes/index.js";
 
-const Login = ({ history }) => {
+const LogIn = ({ history }) => {
   const handleLogin = useCallback(
     async event => {
       event.preventDefault();
@@ -38,4 +38,4 @@ const Login = ({ history }) => {
   );
 };
 
-export default withRouter(Login);
+export default withRouter(LogIn);
