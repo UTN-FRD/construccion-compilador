@@ -1,8 +1,23 @@
-# frd-lisp [![Build Status](https://travis-ci.org/UTN-FRD/construccion-compilador.svg?branch=master)](https://travis-ci.org/UTN-FRD/construccion-compilador)
+# Intérprete funcional [![Build Status](https://travis-ci.org/UTN-FRD/construccion-compilador.svg?branch=master)](https://travis-ci.org/UTN-FRD/construccion-compilador)
 
-Lisp written in Rust as part of a research project in UTN-FRD (Universidad Tecnologica Nacional - Facultad Regional Delta)
+**Una implementación de Lisp en Rust** 
 
-## Requirements
+Proyecto de Investigación y Desarrollo de la Facultad Regional Delta de la Universidad Tecnologica Nacional
+
+
+## Objetivo
+
+Desarrollar un software educativo con el fin de que los estudiantes aprendan a construir compiladores e intérpretes 
+de lenguajes de alto nivel, que además de incluir como elemento esencial un intérprete propiamente dicho, 
+tenga una serie de características y herramientas complementarias que faciliten el proceso de aprendizaje. 
+
+![](consola.png)
+
+
+
+## Instalación y requerimientos técnicos
+
+### Requirements
 
 - [Rust (latest stable), via Rustup is recommended](https://www.rust-lang.org/tools/install)
 - [rust fmt](https://github.com/rust-lang/rustfmt)
@@ -11,13 +26,13 @@ Lisp written in Rust as part of a research project in UTN-FRD (Universidad Tecno
 - [nodejs](https://nodejs.org/es/) 12.x or newer
 - git
 
-## Running the interpreter
+### Running the interpreter
 
 ```
 $ cargo run
 ```
 
-## Running the web interpreter
+### Running the web interpreter
 
 First compile the Rust code to wasm
 
@@ -38,39 +53,24 @@ Start the server
 $ npm run start
 ```
 
-Then go to http://localhost:3000/
+Then go to http://localhost:8080/
 
 
-## Running tests
+### Running tests
 
 ```
 $ cargo test
 ```
 
-## Code quality
+### Code quality
 
 - PRs MUST have passing builds to be merged
 - be sure to auto format your code with `cargo fmt`
 - add tests for new features
 - be sure to use `cargo clippy` to detect common problems in your code (we cannot include this in the CI process because of an outstanding issue between clippy and lalrpop https://github.com/lalrpop/lalrpop/pull/384)
 
-# Mission, Vision, Values
 
-## Mission
-
-TODO
-
-## Vision
-
-TODO
-
-## Values
-
-TODO
-
-## References
-
-The two main reference points are
+## Referencias
 
 - [norvigs toy lisp impl](http://norvig.com/lispy.html): from which we got the basics
 - [Racket lisp](https://docs.racket-lang.org/getting-started/index.html): the lisp implementation that we aim to (right now we are not very close but the ideal is to make something like Ractket syntax wise)
