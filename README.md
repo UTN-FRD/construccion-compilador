@@ -43,6 +43,7 @@ $ wasm-pack build
 Install web dependencies
 
 ```
+$ cp -R ./pkg site-react/src/
 $ cd site-react/
 $ npm install
 ```
