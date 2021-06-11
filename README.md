@@ -54,7 +54,8 @@ Start the server
 $ npm run start
 ```
 
-Then go to http://localhost:8080/
+The browser should open automatically once server is started.
+If not, go to http://localhost:3000/
 
 
 ### Running tests
