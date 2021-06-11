@@ -28,7 +28,7 @@ $ wasm-pack build
 Install web dependencies
 
 ```
-$ cd site/
+$ cd site-react/
 $ npm install
 ```
 
@@ -38,7 +38,7 @@ Start the server
 $ npm run start
 ```
 
-Then go to http://localhost:8080/
+Then go to http://localhost:3000/
 
 
 ## Running tests
