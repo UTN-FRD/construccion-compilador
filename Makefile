@@ -4,7 +4,7 @@ all: build run
 
 build:
 	wasm-pack build
-	bash -c "cd site/ && npm install"
+	bash -c "cp -R ./pkg site-react/src/ && cd site-react/ && npm install"
 
 run:
-	bash -c "cd site/ && npm run start"
+	bash -c "cd site-react/ && npm start"
