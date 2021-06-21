@@ -18,6 +18,7 @@ impl LispVal {
         }
     }
 
+    #[allow(clippy::inherent_to_string)]
     #[wasm_bindgen(method, js_name = toString)]
     pub fn to_string(&self) -> String {
         format!("{:?}", self.0.last().unwrap())
