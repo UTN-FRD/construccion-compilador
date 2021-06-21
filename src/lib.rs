@@ -29,7 +29,7 @@ pub type ParseError<'a> = lalrpop_util::ParseError<(), token::Token<'a>, &'stati
 
 #[derive(Debug)]
 pub enum LispError<'a> {
-	// TODO: add a LexerError
-	ParserError(ParseError<'a>),
-	EvaluationError(EvalError),
+    // TODO: add a LexerError
+    ParserError(ParseError<'a>),
+    EvaluationError(EvalError),
 }

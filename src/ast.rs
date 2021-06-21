@@ -26,12 +26,3 @@ pub enum Atom {
     Number(f64),
     StringAtom(String),
 }
-
-impl Atom {
-    pub fn expect_id(self, error_message: &str) -> String {
-        match self {
-            Atom::Id(id) => id,
-            _ => panic!("{}", error_message),
-        }
-    }
-}

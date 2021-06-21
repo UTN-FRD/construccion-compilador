@@ -104,8 +104,7 @@ pub fn eval_list(list: &[Expr], env: Rc<Env>) -> Result<Rc<LispValue>, EvalError
     let first = list.remove(0);
 
     match first {
-        Expr::Atom(atom) => {
-            let id = atom.expect_id("Unexpected non id");
+        Expr::Atom(Atom::Id(id)) => {
             let func = env.get(&id).ok_or(EvalError::SymbolNotFound {
                 symbol: id.to_string(),
             });
@@ -142,6 +141,7 @@ pub fn eval_list(list: &[Expr], env: Rc<Env>) -> Result<Rc<LispValue>, EvalError
                 _ => Err(EvalError::UnexpectedFunctionValue),
             }
         }
+        Expr::Atom(_) => Err(EvalError::UnexpectedFunctionValue),
         //Expr::List(ref list) =>  {
         // evaluate the first element as a list, check what it evaluates to
         // and do something
