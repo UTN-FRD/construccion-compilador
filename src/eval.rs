@@ -89,7 +89,7 @@ pub fn eval_expression(expression: &Expr, env: Rc<Env>) -> Rc<LispValue> {
 pub fn eval_list(list: &[Expr], env: Rc<Env>) -> Rc<LispValue> {
     debug!("eval_list {:?}", list);
     if list.is_empty() {
-         Rc::new(LispValue::Nil);
+        Rc::new(LispValue::Nil);
     }
 
     let mut list = list.to_vec();

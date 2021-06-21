@@ -109,15 +109,15 @@ impl Func {
     }
 
     pub fn get_name(&self) -> &String {
-         &self.name
+        &self.name
     }
 
     pub fn get_arg_names(&self) -> &Vec<String> {
-         &self.arg_names
+        &self.arg_names
     }
 
     pub fn get_env(&self) -> &Rc<Env> {
-         &self.env
+        &self.env
     }
 
     pub fn get_body(&self) -> &Vec<Expr> {

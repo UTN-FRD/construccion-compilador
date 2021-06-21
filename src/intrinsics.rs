@@ -47,7 +47,7 @@ pub fn lt(arguments: &[Rc<LispValue>]) -> Rc<LispValue> {
     for left_hand in arguments.iter().skip(1) {
         match first.cmp(left_hand) {
             Ordering::Less => {}
-            _ =>  return Rc::new(LispValue::Bool(Bool::False)),
+            _ => return Rc::new(LispValue::Bool(Bool::False)),
         }
     }
     Rc::new(LispValue::Bool(Bool::True))
