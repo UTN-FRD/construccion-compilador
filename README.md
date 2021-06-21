@@ -1,4 +1,4 @@
-# Intérprete funcional [![Build Status](https://travis-ci.org/UTN-FRD/construccion-compilador.svg?branch=master)](https://travis-ci.org/UTN-FRD/construccion-compilador)
+# Intérprete funcional [![ci](https://github.com/UTN-FRD/construccion-compilador/actions/workflows/rust.yml/badge.svg?branch=master&event=status)](https://github.com/UTN-FRD/construccion-compilador/actions/workflows/rust.yml)
 
 **Una implementación de Lisp en Rust** 
 
