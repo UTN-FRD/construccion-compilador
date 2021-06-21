@@ -46,7 +46,7 @@ pub fn eval(source: &str, env: Option<Rc<Env>>) -> Vec<Rc<LispValue>> {
     debug!("env {:?}", env);
 
     // Evaluate the AST.
-    let result = eval_program(&ast.unwrap(), env.clone());
+    let result = eval_program(&ast.unwrap(), env);
     debug!("result {:?}", result);
 
     result
@@ -89,7 +89,7 @@ pub fn eval_expression(expression: &Expr, env: Rc<Env>) -> Rc<LispValue> {
 pub fn eval_list(list: &[Expr], env: Rc<Env>) -> Rc<LispValue> {
     debug!("eval_list {:?}", list);
     if list.is_empty() {
-        return Rc::new(LispValue::Nil);
+         Rc::new(LispValue::Nil);
     }
 
     let mut list = list.to_vec();
@@ -128,7 +128,7 @@ pub fn eval_list(list: &[Expr], env: Rc<Env>) -> Rc<LispValue> {
                     // vector?
                     //
                     // TODO: Can this evaluate multiple `Expr` bodies?
-                    eval_program(func.get_body(), env.clone())[0].clone()
+                    eval_program(func.get_body(), env)[0].clone()
                 }
                 _ => panic!("Unexpected Value in the Function name position"),
             }

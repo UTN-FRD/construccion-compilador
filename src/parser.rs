@@ -15,5 +15,5 @@ pub fn parse(tokens: Vec<Token>) -> Result<Vec<Expr>, ParserError> {
     let mut errors = Vec::new();
     let parser = grammar::ProgramParser::new();
 
-    return parser.parse(&mut errors, tokens);
+    parser.parse(&mut errors, tokens)
 }
