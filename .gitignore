@@ -4,5 +4,5 @@
 /pkg
 
 # site ignored directories
-site/node_modules
-site/dist
+site-react/node_modules
+site-react/dist
