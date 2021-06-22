@@ -21,7 +21,7 @@ pub enum Token<'input> {
 
 // This function takes a string as parameter and returns a vector of triples
 // with the following structure: (start_position, token, end_position)
-pub fn tokenize(s: &str) -> Vec<(usize, Token, usize)> {
+pub fn tokenize(s: &'_ str) -> Vec<(usize, Token<'_>, usize)> {
     let mut tokens = Vec::new();
     let mut char_indices = s.char_indices();
     let mut lookahead = char_indices.next();
