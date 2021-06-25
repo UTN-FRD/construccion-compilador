@@ -37,21 +37,48 @@ enum Token<'input> {
     Error,
 }
 
-struct Span {}
-
-pub struct TokenInfo<'input> {
-	token: Token<'input>,
-	pos: Span,
-	text: String,
+#[derive(Debug, PartialEq, Eq)]
+struct Span {
+    start: usize,
+    end: usize,
 }
 
-// TODO: Hacer una funcion que en vez de producir Tokens, produzca 
+impl Span {
+    fn new(start: usize, end: usize) -> Self {
+        Span { start, end }
+    }
+}
+
+#[derive(Debug, PartialEq)]
+pub struct TokenInfo<'input> {
+    token: Token<'input>,
+    pos: Span,
+    text: String,
+}
+
+impl TokenInfo<'_> {
+    fn new<'a>(token: Token<'a>, pos: Span, text: String) -> TokenInfo<'a> {
+        TokenInfo { token, pos, text }
+    }
+}
+
+// TODO: Hacer una funcion que en vez de producir Tokens, produzca
 // un vector de TokenInfo
-pub fn tokenize<'input>(source: &str) -> Vec<TokenInfo<'input>> {
-	let tokens: Vec<TokenInfo> = vec![];
-	let mut lex = Token::lexer(source);
-	//
-	unimplemented!()
+pub fn tokenize<'input>(source: &'input str) -> Vec<TokenInfo<'input>> {
+    let mut tokens: Vec<TokenInfo<'input>> = vec![];
+    let mut lex = Token::lexer(source);
+
+    loop {
+        if let Some(t) = lex.next() {
+            let span = Span::new(lex.span().start, lex.span().end);
+            let ti = TokenInfo::new(t, span, lex.slice().to_string());
+            tokens.push(ti);
+        } else {
+            break;
+        }
+    }
+
+    tokens
 }
 
 #[test]
@@ -96,4 +123,8 @@ fn can_parse_a_list() {
     );
 }
 
-
+#[test]
+fn can_tokenize() {
+    let expected = TokenInfo::new(Token::LParen, Span::new(0, 1), "(".to_string());
+    assert_eq!(vec![expected], tokenize("("));
+}
