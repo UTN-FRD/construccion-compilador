@@ -3,19 +3,22 @@ use std::rc::Rc;
 
 use crate::lisp_value::{Bool, LispValue};
 
+// TODO: instead of defaulting to 0.0 we should return an error
 pub fn add(arguments: &[Rc<LispValue>]) -> Rc<LispValue> {
-    let res = arguments.iter().fold(0.0, |acc, x| acc + x.unwrap_number());
+    let res = arguments
+        .iter()
+        .fold(0.0, |acc, x| acc + x.get_number().unwrap_or(&0.0));
 
     Rc::new(LispValue::Number(res))
 }
 
 pub fn sub(arguments: &[Rc<LispValue>]) -> Rc<LispValue> {
-    let first = arguments[0].unwrap_number();
+    let first = arguments[0].get_number().unwrap_or(&0.0);
 
     let res = arguments
         .iter()
         .skip(1)
-        .fold(*first, |acc, x| acc - x.unwrap_number());
+        .fold(*first, |acc, x| acc - x.get_number().unwrap_or(&0.0));
 
     Rc::new(LispValue::Number(res))
 }

@@ -10,17 +10,24 @@ pub struct LispVal(Vec<Rc<LispValue>>);
 impl LispVal {
     #[wasm_bindgen(constructor)]
     pub fn new(value: JsValue) -> Result<LispVal, JsValue> {
+        let parse_error = Err(JsValue::from_str("Parsing Failed"));
         if let Some(s) = value.as_string() {
-            let result = eval(&*s, None);
-            Ok(LispVal(result))
+            match eval(&*s, None) {
+                Ok(value) => Ok(LispVal(value)),
+                Err(_eval_error) => Err(JsValue::NULL), // TODO: build the error msg
+            }
         } else {
-            Err(JsValue::from_str("Parsing Failed"))
+            parse_error
         }
     }
 
+    // avoid clippy warning
     #[allow(clippy::inherent_to_string)]
     #[wasm_bindgen(method, js_name = toString)]
     pub fn to_string(&self) -> String {
-        format!("{:?}", self.0.last().unwrap())
+        match self.0.last() {
+            Some(val) => format!("{:?}", val),
+            None => String::new(),
+        }
     }
 }
