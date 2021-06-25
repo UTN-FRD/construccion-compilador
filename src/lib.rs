@@ -2,6 +2,7 @@
 extern crate log;
 extern crate env_logger;
 
+mod lexer;
 mod parser;
 mod token;
 
