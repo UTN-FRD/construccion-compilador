@@ -2,9 +2,9 @@
 extern crate log;
 extern crate env_logger;
 
+mod lexer;
 mod parser;
 mod token;
-mod lexer;
 
 // TODO: Is it convenient to expose `Token` and `Expr` directly instead of the module?
 pub use ast::Atom;

@@ -2,7 +2,7 @@ use logos::Logos;
 
 #[derive(Debug, Copy, Clone, PartialEq, Logos)]
 enum Token<'input> {
-    #[regex("-?[0-9]+\\.[0-9]+", |t| t.slice().parse())]
+    #[regex("-?[0-9]+(\\.[0-9])*", |t| t.slice().parse())] // fix
     Num(f64),
     #[token("(")]
     LParen,
@@ -37,17 +37,7 @@ enum Token<'input> {
     Error,
 }
 
-#[derive(Debug, PartialEq, Eq)]
-struct Span {
-    start: usize,
-    end: usize,
-}
-
-impl Span {
-    fn new(start: usize, end: usize) -> Self {
-        Span { start, end }
-    }
-}
+pub type Span = core::ops::Range<usize>;
 
 #[derive(Debug, PartialEq)]
 pub struct TokenInfo<'input> {
@@ -57,27 +47,23 @@ pub struct TokenInfo<'input> {
 }
 
 impl TokenInfo<'_> {
-    fn new<'a>(token: Token<'a>, pos: Span, text: String) -> TokenInfo<'a> {
+    #[allow(dead_code)]
+    fn new(token: Token<'_>, pos: Span, text: String) -> TokenInfo<'_> {
         TokenInfo { token, pos, text }
     }
 }
 
 // TODO: Hacer una funcion que en vez de producir Tokens, produzca
 // un vector de TokenInfo
+#[allow(dead_code)]
 pub fn tokenize<'input>(source: &'input str) -> Vec<TokenInfo<'input>> {
     let mut tokens: Vec<TokenInfo<'input>> = vec![];
     let mut lex = Token::lexer(source);
 
-    loop {
-        if let Some(t) = lex.next() {
-            let span = Span::new(lex.span().start, lex.span().end);
-            let ti = TokenInfo::new(t, span, lex.slice().to_string());
-            tokens.push(ti);
-        } else {
-            break;
-        }
+    while let Some(t) = lex.next() {
+        let ti = TokenInfo::new(t, lex.span(), lex.slice().to_string());
+        tokens.push(ti);
     }
-
     tokens
 }
 
@@ -125,6 +111,6 @@ fn can_parse_a_list() {
 
 #[test]
 fn can_tokenize() {
-    let expected = TokenInfo::new(Token::LParen, Span::new(0, 1), "(".to_string());
+    let expected = TokenInfo::new(Token::LParen, 0..1, "(".to_string());
     assert_eq!(vec![expected], tokenize("("));
 }
