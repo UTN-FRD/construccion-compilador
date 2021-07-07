@@ -1,6 +1,7 @@
 use std::str::{CharIndices, FromStr};
+use serde::Serialize;
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Serialize)]
 pub enum Token {
     Num(f64),
     LParen,
