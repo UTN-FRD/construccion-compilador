@@ -71,7 +71,7 @@ impl Interpreter {
 
         // TODO: Can't we just pass a reference to the tokens? Do they need to
         // be moved?
-        let ast = match parse(tokens.clone()) {
+        let ast = match parse(tokens) {
             Ok(v) => v,
             Err(_) => return Err(JsValue::from_str("Parsing failed.")),
         };
@@ -85,37 +85,37 @@ impl Interpreter {
 
         // TODO: Can't we just pass a reference to the environment? Does it
         // need to be moved?
-        let result = match eval_program(&ast, environment.clone()) {
+        let result = match eval_program(&ast, environment) {
             Ok(v) => v,
             Err(_) => return Err(JsValue::from_str("Evaluation failed.")),
         };
 
-        return Ok(Self {
+        Ok(Self {
             json_tokens,
             json_ast,
             result,
-        });
+        })
     }
 
     // TODO: Can the front-end build JSONs from Strings? Can we return a
     // better structure?
     #[wasm_bindgen(method, js_name = getTokens)]
     pub fn get_tokens(&self) -> JsValue {
-        return JsValue::from_str(&self.json_tokens);
+        JsValue::from_str(&self.json_tokens)
     }
 
     // TODO: Same as `get_tokens`.
     #[wasm_bindgen(method, js_name = getAST)]
     pub fn get_ast(&self) -> JsValue {
-        return JsValue::from_str(&self.json_ast);
+        JsValue::from_str(&self.json_ast)
     }
 
     #[wasm_bindgen(method, js_name = getResult)]
     pub fn get_result(&self) -> String {
         // TODO: Is it correct to only take the last value?
-        return format!(
+        format!(
             "{:?}",
             self.result.last().unwrap_or(&Rc::new(LispValue::Nil))
-        );
+        )
     }
 }
