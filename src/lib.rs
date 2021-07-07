@@ -25,11 +25,11 @@ extern crate wasm_bindgen;
 #[cfg(feature = "wasm")]
 pub mod wasm;
 
-pub type ParseError<'a> = lalrpop_util::ParseError<(), token::Token<'a>, &'static str>;
+pub type ParseError = lalrpop_util::ParseError<(), token::Token, &'static str>;
 
 #[derive(Debug)]
-pub enum LispError<'a> {
+pub enum LispError {
     // TODO: add a LexerError
-    ParserError(ParseError<'a>),
+    ParserError(ParseError),
     EvaluationError(EvalError),
 }

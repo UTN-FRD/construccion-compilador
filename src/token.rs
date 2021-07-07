@@ -21,7 +21,7 @@ pub enum Token {
 
 // This function takes a string as parameter and returns a vector of triples
 // with the following structure: (start_position, token, end_position)
-pub fn tokenize(s: &'_ str) -> Vec<(usize, Token<'_>, usize)> {
+pub fn tokenize(s: &str) -> Vec<(usize, Token, usize)> {
     let mut tokens = Vec::new();
     let mut char_indices = s.char_indices();
     let mut lookahead = char_indices.next();
@@ -43,7 +43,7 @@ pub fn tokenize(s: &'_ str) -> Vec<(usize, Token<'_>, usize)> {
                     let (ci, _) = char_indices.next().expect("Unclosed '\"'"); // consume opening '"'
                     let (slice_end, _) = take_while(ci, &mut char_indices, |c| c != '"');
                     lookahead = char_indices.next(); // consume closing '"'
-                    tokens.push(Token::String(&s[ci..slice_end]));
+                    tokens.push(Token::String(String::from(&s[ci..slice_end])));
                     continue;
                 }
                 _ if c.is_digit(10) => {
@@ -101,7 +101,7 @@ fn parse_identifier(s: &str) -> Token {
     match s {
         "define" => Token::Define,
         "if" => Token::If,
-        ident => Token::Identifier(ident),
+        ident => Token::Identifier(String::from(ident)),
     }
 }
 
