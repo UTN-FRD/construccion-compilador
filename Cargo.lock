@@ -181,9 +181,9 @@ dependencies = [
  "lalrpop-util",
  "log",
  "regex",
- "thiserror",
  "serde",
  "serde_json",
+ "thiserror",
  "wasm-bindgen",
  "web-sys",
 ]
