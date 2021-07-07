@@ -1,5 +1,5 @@
-use std::str::{CharIndices, FromStr};
 use serde::Serialize;
+use std::str::{CharIndices, FromStr};
 
 #[derive(Clone, Debug, PartialEq, Serialize)]
 pub enum Token {

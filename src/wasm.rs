@@ -3,9 +3,9 @@ use crate::lisp_value::LispValue;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 
-use crate::{tokenize, parse, Token};
-use crate::eval::eval_program;
 use crate::env::Env;
+use crate::eval::eval_program;
+use crate::{parse, tokenize, Token};
 
 #[wasm_bindgen]
 pub struct LispVal(Vec<Rc<LispValue>>);
@@ -59,7 +59,10 @@ impl Interpreter {
             None => return Err(JsValue::from_str("Invalid value.")),
         };
 
-        let tokens: Vec<Token> = tokenize(&source).into_iter().map(|(_, token, _)| token).collect();
+        let tokens: Vec<Token> = tokenize(&source)
+            .into_iter()
+            .map(|(_, token, _)| token)
+            .collect();
 
         let json_tokens = match serde_json::to_string(&tokens) {
             Ok(v) => v,
@@ -75,7 +78,7 @@ impl Interpreter {
 
         let json_ast = match serde_json::to_string(&ast) {
             Ok(v) => v,
-            Err(_) => return Err(JsValue::from_str("AST's JSONification failed."))
+            Err(_) => return Err(JsValue::from_str("AST's JSONification failed.")),
         };
 
         let environment = Rc::new(Env::new_global());
@@ -111,6 +114,9 @@ impl Interpreter {
     #[wasm_bindgen(method, js_name = getResult)]
     pub fn get_result(&self) -> String {
         // TODO: Is it correct to only take the last value?
-        return format!("{:?}", self.result.last().unwrap_or(&Rc::new(LispValue::Nil)));
+        return format!(
+            "{:?}",
+            self.result.last().unwrap_or(&Rc::new(LispValue::Nil))
+        );
     }
 }
