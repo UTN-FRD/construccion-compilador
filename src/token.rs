@@ -1,7 +1,7 @@
 use std::str::{CharIndices, FromStr};
 
 #[derive(Clone, Debug, PartialEq)]
-pub enum Token<'input> {
+pub enum Token {
     Num(f64),
     LParen,
     RParen,
@@ -15,8 +15,8 @@ pub enum Token<'input> {
     Comma,
     Define,
     If,
-    Identifier(&'input str),
-    String(&'input str),
+    Identifier(String),
+    String(String),
 }
 
 // This function takes a string as parameter and returns a vector of triples
