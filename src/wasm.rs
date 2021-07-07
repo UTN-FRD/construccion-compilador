@@ -91,10 +91,9 @@ impl Interpreter {
         };
 
         return Ok(Self {
-            json_tokens: json_tokens,
-            json_ast: json_ast,
-
-            result: result,
+            json_tokens,
+            json_ast,
+            result,
         });
     }
 
