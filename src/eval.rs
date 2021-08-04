@@ -18,6 +18,8 @@ pub enum EvalError {
     SymbolNotFound { symbol: String },
     #[error("Unexpected Value in the function name position.")]
     UnexpectedFunctionValue,
+    #[error("Wrong argument")]
+    WrongArgument { expected: String, received: String },
     #[error("Unhandled Error.")]
     UnhandledError,
 }
@@ -115,7 +117,7 @@ pub fn eval_list(list: &[Expr], env: Rc<Env>) -> Result<Rc<LispValue>, EvalError
 
             match func.as_deref() {
                 Ok(LispValue::Intrinsic(ref func)) => {
-                    let res = func(&arg_values);
+                    let res = func(&arg_values)?;
                     debug!("eval_list END Intrinsice {:?}", res);
                     Ok(res)
                 }
@@ -159,7 +161,7 @@ pub fn eval_atom(atom: &Atom, env: Rc<Env>) -> Result<Rc<LispValue>, EvalError> 
         Atom::Id(id) => match id.as_str() {
             "true" => Ok(Rc::new(LispValue::Bool(Bool::True))),
             "false" => Ok(Rc::new(LispValue::Bool(Bool::False))),
-            _ => env.get(&id).ok_or(EvalError::SymbolNotFound {
+            _ => env.get(id).ok_or(EvalError::SymbolNotFound {
                 symbol: id.to_string(),
             }),
         },
