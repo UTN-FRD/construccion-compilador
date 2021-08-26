@@ -12,6 +12,7 @@ import Box from '@material-ui/core/Box';
 import Paper from '@material-ui/core/Paper';
 import firebase from '../firebase';
 import { AuthContext } from './Auth';
+import TreeView from './TreeView/TreeView';
 
 const useStyles = makeStyles((theme) => ({
   buttons: {
@@ -113,6 +114,10 @@ const Editor = ({ wasm }) => {
           }}
         />
       </Paper>
+      <hr />
+      <div style={{ width: '1000px', height: '1000px' }}>
+        <TreeView />
+      </div>
     </Box>
   )
 }
