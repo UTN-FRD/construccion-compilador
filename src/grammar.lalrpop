@@ -3,11 +3,11 @@ use crate::ast::Atom;
 use crate::{ Token, Expr };
 use lalrpop_util::ErrorRecovery;
 
-grammar<'err, 'input>(errors: &'err mut Vec<ErrorRecovery<usize, Token<'input>, &'static str>>);
+grammar<'err, 'input>(errors: &'err mut Vec<ErrorRecovery<usize, Token, &'static str>>);
 
 
 extern {
-    enum Token<'input> {
+    enum Token {
         "=" => Token::Equal,
         ">" => Token::GreaterThan,
         "<" => Token::LessThan,
@@ -20,8 +20,8 @@ extern {
         "define" => Token::Define,
         "if" => Token::If,
         "number literal" => Token::Num(<f64>),
-        "string literal" => Token::String(<&'input str>),
-        "identifier" => Token::Identifier(<&'input str>)
+        "string literal" => Token::String(<String>),
+        "identifier" => Token::Identifier(<String>)
     }
 }
 
