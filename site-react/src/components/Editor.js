@@ -42,14 +42,20 @@ const Editor = ({ wasm }) => {
 
   const handleWasm = () => {
     try {
+      // List, Atom, DefineFn, DefineVariable, If
+
+      const mystr = '[{"DefineFunction":["f",["x"],[{"List":[{"Atom":{"Id":"+"}},{"Atom":{"Id":"x"}},{"Atom":{"Number":1.0}}]}]]}]'
+
       // use wasm `toString` function
       // const parsedValue = new wasm.LispVal(editorValue).toString();
-      const parsedValue = new wasm.Interpreter(editorValue).getTokens();
-      setEditorValue(prevValue => [...prevValue].join('') + '\n' + parsedValue + '\n');
+      const parsedTokens = new wasm.Interpreter(editorValue).getTokens();
+      const parsedAST = new wasm.Interpreter(editorValue).getAST();
+      console.log({ parsedTokens, parsedAST });
+      setEditorValue(prevValue => [...prevValue].join('') + '\n' + parsedTokens + '\n');
     } catch (error) {
       console.log({ error });
       // refresh the page if an error is caught
-      history.go(0);
+      // history.go(0);
     }
   };
 
