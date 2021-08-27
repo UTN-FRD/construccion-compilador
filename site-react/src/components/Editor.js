@@ -43,7 +43,8 @@ const Editor = ({ wasm }) => {
   const handleWasm = () => {
     try {
       // use wasm `toString` function
-      const parsedValue = new wasm.LispVal(editorValue).toString();
+      // const parsedValue = new wasm.LispVal(editorValue).toString();
+      const parsedValue = new wasm.Interpreter(editorValue).getTokens();
       setEditorValue(prevValue => [...prevValue].join('') + '\n' + parsedValue + '\n');
     } catch (error) {
       console.log({ error });
