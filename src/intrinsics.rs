@@ -4,7 +4,6 @@ use std::rc::Rc;
 use crate::eval::EvalError;
 use crate::lisp_value::{Bool, LispValue};
 
-// TODO: instead of defaulting to 0.0 we should return an error
 pub fn add(arguments: &[Rc<LispValue>]) -> Result<Rc<LispValue>, EvalError> {
     let res = arguments
         .iter()
@@ -25,21 +24,20 @@ pub fn sub(arguments: &[Rc<LispValue>]) -> Result<Rc<LispValue>, EvalError> {
 }
 
 pub fn eq(arguments: &[Rc<LispValue>]) -> Result<Rc<LispValue>, EvalError> {
-    let first = &arguments[0];
-    for left_hand in arguments.iter().skip(1) {
-        if !first.eq(left_hand) {
-            return Ok(Rc::new(LispValue::Bool(Bool::False)));
-        }
-    }
-
-    Ok(Rc::new(LispValue::Bool(Bool::True)))
+	let first = arguments[0].get_number()?;
+    let res = arguments.iter().skip(1).try_fold(true, |acc, x| Ok(acc && first.eq(x.get_number()?)))?;
+	let lisp_result = match res {
+		false => Bool::False,
+		true => Bool::True,
+	};
+    Ok(Rc::new(LispValue::Bool(lisp_result)))
 }
 
 pub fn gt(arguments: &[Rc<LispValue>]) -> Result<Rc<LispValue>, EvalError> {
-    let first = &arguments[0];
+    let first = arguments[0].get_number()?;
     for left_hand in arguments.iter().skip(1) {
-        match first.cmp(left_hand) {
-            Ordering::Greater => {}
+        match first.partial_cmp(left_hand.as_ref().get_number()?) {
+				Some(Ordering::Greater) => {}
             _ => return Ok(Rc::new(LispValue::Bool(Bool::False))),
         }
     }
@@ -47,10 +45,10 @@ pub fn gt(arguments: &[Rc<LispValue>]) -> Result<Rc<LispValue>, EvalError> {
 }
 
 pub fn lt(arguments: &[Rc<LispValue>]) -> Result<Rc<LispValue>, EvalError> {
-    let first = &arguments[0];
+    let first = arguments[0].get_number()?;
     for left_hand in arguments.iter().skip(1) {
-        match first.cmp(left_hand) {
-            Ordering::Less => {}
+        match first.partial_cmp(left_hand.as_ref().get_number()?) {
+            Some(Ordering::Less) => {}
             _ => return Ok(Rc::new(LispValue::Bool(Bool::False))),
         }
     }
