@@ -4,7 +4,10 @@ use std::rc::Rc;
 
 use crate::env::Env;
 
+use crate::eval::EvalError;
 use crate::Expr;
+
+type IntrinsicFunction = fn(&[Rc<LispValue>]) -> Result<Rc<LispValue>, EvalError>;
 
 #[derive(Clone)]
 pub enum LispValue {
@@ -13,16 +16,31 @@ pub enum LispValue {
     Id(String),
     Number(f64),
     Bool(Bool),
-    Intrinsic(fn(&[Rc<LispValue>]) -> Rc<LispValue>),
+    Intrinsic(IntrinsicFunction),
     Func(Func),
     StringValue(String),
 }
 
 impl LispValue {
-    pub fn get_number(&self) -> Option<&f64> {
+    pub fn get_number(&self) -> Result<&f64, EvalError> {
         match self {
-            LispValue::Number(ref num) => Some(num),
-            _ => None,
+            LispValue::Number(ref num) => Ok(num),
+            _ => Err(EvalError::WrongArgument {
+                expected: "Number".to_owned(),
+                received: self.to_string(),
+            }),
+        }
+    }
+
+    pub fn get_type(self) -> String {
+        match self {
+            LispValue::Nil => "Nil".to_owned(),
+            LispValue::Id(_) => "Identifier".to_owned(),
+            LispValue::Number(_) => "Number".to_owned(),
+            LispValue::Bool(_) => "Bool".to_owned(),
+            LispValue::Intrinsic(_) => "Intrinsic".to_owned(),
+            LispValue::Func(_) => "Function".to_owned(),
+            LispValue::StringValue(_) => "String".to_owned(),
         }
     }
 }
