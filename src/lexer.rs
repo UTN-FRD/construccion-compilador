@@ -2,7 +2,7 @@ use logos::Logos;
 
 #[derive(Debug, Copy, Clone, PartialEq, Logos)]
 enum Token<'input> {
-    #[regex("-?[0-9]+(\\.[0-9])*", |t| t.slice().parse())] // fix
+    #[regex("-?[0-9]+(\\.[0-9])*", |t| t.slice().parse())]
     Num(f64),
     #[token("(")]
     LParen,
