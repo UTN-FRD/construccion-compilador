@@ -26,7 +26,7 @@ impl LispValue {
         match self {
             LispValue::Number(ref num) => Ok(num),
             _ => Err(EvalError::WrongArgument {
-                expected: "Number".into(),
+                expected: "Number".to_string(),
                 received: self.to_string(),
             }),
         }
@@ -34,13 +34,13 @@ impl LispValue {
 
     pub fn get_type(self) -> String {
         match self {
-            LispValue::Nil => "Nil".into(),
-            LispValue::Id(_) => "Identifier".into(),
-            LispValue::Number(_) => "Number".into(),
-            LispValue::Bool(_) => "Bool".into(),
-            LispValue::Intrinsic(_) => "Intrinsic".into(),
-            LispValue::Func(_) => "Function".into(),
-            LispValue::StringValue(_) => "String".into(),
+            LispValue::Nil => "Nil".to_string(),
+            LispValue::Id(_) => "Identifier".to_string(),
+            LispValue::Number(_) => "Number".to_string(),
+            LispValue::Bool(_) => "Bool".to_string(),
+            LispValue::Intrinsic(_) => "Intrinsic".to_string(),
+            LispValue::Func(_) => "Function".to_string(),
+            LispValue::StringValue(_) => "String".to_string(),
         }
     }
 }

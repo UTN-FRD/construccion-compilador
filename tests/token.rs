@@ -37,14 +37,14 @@ fn parenthesis_and_numbers_test() {
 fn completed_string_test() {
     let source_code = "\"string\"";
     let tokens = tokenize(source_code);
-    assert_eq!(tokens, [(0, Token::String("string".into()), 1)])
+    assert_eq!(tokens, [(0, Token::String("string".to_string()), 1)])
 }
 
 #[test]
 fn another_completed_string_test() {
     let source_code = "\"another string\"";
     let tokens = tokenize(source_code);
-    assert_eq!(tokens, [(0, Token::String("another string".into()), 1)])
+    assert_eq!(tokens, [(0, Token::String("another string".to_string()), 1)])
 }
 
 // TODO: This should break.
@@ -54,7 +54,7 @@ fn another_completed_string_test() {
 fn incomplete_string_test() {
     let source_code = "\"hello";
     let tokens = tokenize(source_code);
-    assert_eq!(tokens, [(0, Token::String("hello".into()), 1)])
+    assert_eq!(tokens, [(0, Token::String("hello".to_string()), 1)])
 }
 
 #[test]
@@ -67,11 +67,11 @@ fn function_definition_test() {
             (0, Token::LParen, 1),
             (2, Token::Define, 3),
             (4, Token::LParen, 5),
-            (6, Token::Identifier("id".into()), 7),
-            (8, Token::Identifier("x".into()), 9),
+            (6, Token::Identifier("id".to_string()), 7),
+            (8, Token::Identifier("x".to_string()), 9),
             (10, Token::RParen, 11),
             (12, Token::LParen, 13),
-            (14, Token::Identifier("x".into()), 15),
+            (14, Token::Identifier("x".to_string()), 15),
             (16, Token::RParen, 17),
             (18, Token::RParen, 19)
         ]
@@ -88,8 +88,8 @@ fn another_function_definition_test() {
             (0, Token::LParen, 1),
             (2, Token::Define, 3),
             (4, Token::LParen, 5),
-            (6, Token::Identifier("k".into()), 7),
-            (8, Token::Identifier("x".into()), 9),
+            (6, Token::Identifier("k".to_string()), 7),
+            (8, Token::Identifier("x".to_string()), 9),
             (10, Token::RParen, 11),
             (12, Token::Num(12345.0), 13),
             (14, Token::RParen, 15)
@@ -107,7 +107,7 @@ fn equality_test() {
             (0, Token::LParen, 1),
             (2, Token::Equal, 3),
             (4, Token::Num(3.0), 5),
-            (6, Token::Identifier("x".into()), 7),
+            (6, Token::Identifier("x".to_string()), 7),
             (8, Token::RParen, 9)
         ]
     );
