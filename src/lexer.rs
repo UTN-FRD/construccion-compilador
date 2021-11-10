@@ -1,7 +1,8 @@
 use logos::Logos;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Copy, Clone, PartialEq, Logos)]
-enum Token<'input> {
+#[derive(Debug, Copy, Clone, PartialEq, Logos, Serialize, Deserialize)]
+pub enum Token<'input> {
     #[regex("-?[0-9]+(\\.[0-9])*", |t| t.slice().parse())]
     Num(f64),
     #[token("(")]

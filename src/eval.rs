@@ -7,10 +7,11 @@ use crate::LispError;
 use crate::ast::Atom;
 use crate::env::Env;
 use crate::lisp_value::{Bool, Func, LispValue};
-use crate::tokenize;
 use crate::{parse, Expr};
+use crate::lexer;
 use std::rc::Rc;
 use thiserror::Error;
+use logos::Logos;
 
 #[derive(Error, Debug)]
 pub enum EvalError {
@@ -31,10 +32,10 @@ pub enum EvalError {
 // tree.
 pub fn eval(source: &str, env: Option<Rc<Env>>) -> Result<Vec<Rc<LispValue>>, LispError> {
     // Convert the input string into a stream of tokens and their start & end positions.
-    let tokens = tokenize(source);
+    let lex = lexer::Token::lexer(source);
 
     // Discard start & end positions from the vector of tuples, leaving only `Token`s.
-    let tokens = tokens.into_iter().map(|(_, token, _)| token).collect();
+    let tokens = lex.into_iter().collect::<Vec<lexer::Token>>();
     debug!("tokens: {:?}", tokens);
 
     // Convert the stream of tokens into an AST.

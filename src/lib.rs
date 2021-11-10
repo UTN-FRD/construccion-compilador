@@ -2,17 +2,14 @@
 extern crate log;
 extern crate env_logger;
 
-mod lexer;
+pub mod lexer;
 mod parser;
-mod token;
 
 // TODO: Is it convenient to expose `Token` and `Expr` directly instead of the module?
 pub use ast::Atom;
 pub use ast::Expr;
 use eval::EvalError;
 pub use parser::parse;
-pub use token::tokenize;
-pub use token::Token;
 
 pub mod ast;
 pub mod env;
@@ -26,11 +23,11 @@ extern crate wasm_bindgen;
 #[cfg(feature = "wasm")]
 pub mod wasm;
 
-pub type ParseError = lalrpop_util::ParseError<(), token::Token, &'static str>;
+pub type ParseError<'a> = lalrpop_util::ParseError<(), lexer::Token<'a>, &'static str>;
 
 #[derive(Debug)]
-pub enum LispError {
+pub enum LispError<'a> {
     // TODO: add a LexerError
-    ParserError(ParseError),
+    ParserError(ParseError<'a>),
     EvaluationError(EvalError),
 }

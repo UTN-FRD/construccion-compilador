@@ -5,7 +5,9 @@ use wasm_bindgen::prelude::*;
 
 use crate::env::Env;
 use crate::eval::eval_program;
-use crate::{parse, tokenize, Token};
+use crate::parse;
+use crate::lexer::Token;
+use logos::Logos;
 
 #[wasm_bindgen]
 pub struct LispVal(Vec<Rc<LispValue>>);
@@ -59,9 +61,8 @@ impl Interpreter {
             None => return Err(JsValue::from_str("Invalid value.")),
         };
 
-        let tokens: Vec<Token> = tokenize(&source)
+        let tokens: Vec<Token> = Token::lexer(&source)
             .into_iter()
-            .map(|(_, token, _)| token)
             .collect();
 
         let json_tokens = match serde_json::to_string(&tokens) {

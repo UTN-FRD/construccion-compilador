@@ -1,17 +1,16 @@
 use crate::Expr;
-use crate::Token;
+use crate::lexer;
 use lalrpop_util::lalrpop_mod;
 
-// This macro synthetises the `grammar` module which will be used to parse files.
 lalrpop_mod!(
     #[allow(clippy::all)]
     #[allow(unused)]
     grammar
 );
 
-pub type ParserError = lalrpop_util::ParseError<(), Token, &'static str>;
+pub type ParserError<'a> = lalrpop_util::ParseError<(), lexer::Token<'a>, &'static str>;
 
-pub fn parse(tokens: Vec<Token>) -> Result<Vec<Expr>, ParserError> {
+pub fn parse<'a>(tokens: Vec<lexer::Token<'a>>) -> Result<Vec<Expr>, ParserError<'a>> {
     let mut errors = Vec::new();
     let parser = grammar::ProgramParser::new();
 
