@@ -10,7 +10,7 @@ lalrpop_mod!(
 
 pub type ParserError<'a> = lalrpop_util::ParseError<(), lexer::Token<'a>, &'static str>;
 
-pub fn parse<'a>(tokens: Vec<lexer::Token<'a>>) -> Result<Vec<Expr>, ParserError<'a>> {
+pub fn parse(tokens: Vec<lexer::Token>) -> Result<Vec<Expr>, ParserError> {
     let mut errors = Vec::new();
     let parser = grammar::ProgramParser::new();
 

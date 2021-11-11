@@ -42,13 +42,9 @@ pub enum Token<'input> {
 pub fn get_token_info<'a>(mut lexer: Lexer<'a, Token<'a>>) -> Vec<(usize, Token<'a>, usize)> {
     let mut tokens = vec![];
 
-    loop {
-        if let Some(t) = lexer.next() {
-            let span = lexer.span();
-            tokens.push((span.start, t, span.end));
-        } else {
-            break;
-        }
+    while let Some(token) = lexer.next() {
+        let span = lexer.span();
+        tokens.push((span.start, token, span.end));
     }
 
     tokens
