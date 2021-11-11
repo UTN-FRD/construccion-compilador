@@ -29,9 +29,9 @@ pub enum Token<'input> {
     Define,
     #[token("if")]
     If,
-    #[regex("[A-Za-z][A-Za-z0-9]+")]
+    #[regex("[a-zA-Z$_][a-zA-Z0-9$_]*")]
     Identifier(&'input str),
-    #[regex("\"[a-zA-Z]+\"", |t| {let s = t.slice(); &s[1..(s.len() - 1)]})]
+    #[regex(r#""([^"\\]|\\t|\\u|\\n|\\")*""#, |t| {let s = t.slice(); &s[1..(s.len() - 1)]})]
     String(&'input str),
     #[regex(r"[ \t\n\f]+", logos::skip)]
     #[error]
