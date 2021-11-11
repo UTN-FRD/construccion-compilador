@@ -1,4 +1,4 @@
-use logos::Logos;
+use logos::{Lexer, Logos};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Copy, Clone, PartialEq, Logos, Serialize, Deserialize)]
@@ -29,13 +29,29 @@ pub enum Token<'input> {
     Define,
     #[token("if")]
     If,
-    #[regex("[a-zA-Z$_][a-zA-Z0-9$_]*")]
+    // #[regex("[a-zA-Z$_][a-zA-Z0-9$_]*")]
+    #[regex("[a-zA-Z][a-zA-Z0-9:&-]*")]
     Identifier(&'input str),
     #[regex(r#""([^"\\]|\\t|\\u|\\n|\\")*""#, |t| {let s = t.slice(); &s[1..(s.len() - 1)]})]
     String(&'input str),
     #[regex(r"[ \t\n\f]+", logos::skip)]
     #[error]
     Error,
+}
+
+pub fn get_token_info<'a>(mut lexer: Lexer<'a, Token<'a>>) -> Vec<(usize, Token<'a>, usize)> {
+    let mut tokens = vec![];
+
+    loop {
+        if let Some(t) = lexer.next() {
+            let span = lexer.span();
+            tokens.push((span.start, t, span.end));
+        } else {
+            break;
+        }
+    }
+
+    tokens
 }
 
 pub type Span = core::ops::Range<usize>;
