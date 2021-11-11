@@ -6,7 +6,6 @@ use lalrpop_util::ErrorRecovery;
 
 grammar<'err, 'input>(errors: &'err mut Vec<ErrorRecovery<usize, Token<'input>, &'static str>>);
 
-
 extern {
     enum Token<'input> {
         "=" => Token::Equal,
