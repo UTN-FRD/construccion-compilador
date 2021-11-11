@@ -35,7 +35,7 @@ pub fn eval(source: &str, env: Option<Rc<Env>>) -> Result<Vec<Rc<LispValue>>, Li
     let lex = lexer::Token::lexer(source);
 
     // Discard start & end positions from the vector of tuples, leaving only `Token`s.
-    let tokens = lex.into_iter().collect::<Vec<lexer::Token>>();
+    let tokens = lex.collect::<Vec<lexer::Token>>();
     debug!("tokens: {:?}", tokens);
 
     // Convert the stream of tokens into an AST.
@@ -51,7 +51,7 @@ pub fn eval(source: &str, env: Option<Rc<Env>>) -> Result<Vec<Rc<LispValue>>, Li
     debug!("env {:?}", env);
 
     // Evaluate the AST.
-    match ast.clone() {
+    match ast {
         Ok(exprs) => match eval_program(&exprs, env) {
             Ok(value) => {
                 debug!("result {:?}", value);
@@ -59,7 +59,7 @@ pub fn eval(source: &str, env: Option<Rc<Env>>) -> Result<Vec<Rc<LispValue>>, Li
             }
             Err(eval_error) => Err(LispError::EvaluationError(eval_error)),
         },
-        Err(parse_error) => Err(LispError::ParserError(parse_error.clone())),
+        Err(parse_error) => Err(LispError::ParserError(parse_error)),
     }
 }
 

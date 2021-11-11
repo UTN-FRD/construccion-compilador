@@ -61,7 +61,7 @@ impl Interpreter {
             None => return Err(JsValue::from_str("Invalid value.")),
         };
 
-        let tokens: Vec<Token> = Token::lexer(&source).into_iter().collect();
+        let tokens = Token::lexer(&source).collect();
 
         let json_tokens = match serde_json::to_string(&tokens) {
             Ok(v) => v,
