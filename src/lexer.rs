@@ -50,36 +50,6 @@ pub fn get_token_info<'a>(mut lexer: Lexer<'a, Token<'a>>) -> Vec<(usize, Token<
     tokens
 }
 
-pub type Span = core::ops::Range<usize>;
-
-#[derive(Debug, PartialEq)]
-pub struct TokenInfo<'input> {
-    token: Token<'input>,
-    pos: Span,
-    text: String,
-}
-
-impl TokenInfo<'_> {
-    #[allow(dead_code)]
-    fn new(token: Token<'_>, pos: Span, text: String) -> TokenInfo<'_> {
-        TokenInfo { token, pos, text }
-    }
-}
-
-// TODO: Hacer una funcion que en vez de producir Tokens, produzca
-// un vector de TokenInfo
-#[allow(dead_code)]
-pub fn tokenize<'input>(source: &'input str) -> Vec<TokenInfo<'input>> {
-    let mut tokens: Vec<TokenInfo<'input>> = vec![];
-    let mut lex = Token::lexer(source);
-
-    while let Some(t) = lex.next() {
-        let ti = TokenInfo::new(t, lex.span(), lex.slice().to_string());
-        tokens.push(ti);
-    }
-    tokens
-}
-
 #[test]
 fn can_parse_strings() {
     let mut lex = Token::lexer("\"hello\"");
@@ -120,10 +90,4 @@ fn can_parse_a_list() {
             Token::RParen
         ]
     );
-}
-
-#[test]
-fn can_tokenize() {
-    let expected = TokenInfo::new(Token::LParen, 0..1, "(".to_string());
-    assert_eq!(vec![expected], tokenize("("));
 }
