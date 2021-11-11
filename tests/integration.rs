@@ -2,12 +2,11 @@
 
 use frd_lisp::ast::Atom;
 use frd_lisp::{lexer, parse, Expr};
-use logos::Logos;
 
 #[test]
 fn parse_eq_operation() {
     let source = "(= 3 x)";
-    let lexer = lexer::Token::lexer(source);
+    let lexer = lexer::Token::tokenize(source);
     let tokens = lexer.collect();
     let ast = parse(tokens);
 
@@ -25,7 +24,7 @@ fn parse_eq_operation() {
 #[test]
 fn parse_subtract_operation() {
     let source = "(- x 1)";
-    let lexer = lexer::Token::lexer(source);
+    let lexer = lexer::Token::tokenize(source);
     let tokens = lexer.collect();
     let ast = parse(tokens);
 
@@ -43,7 +42,7 @@ fn parse_subtract_operation() {
 #[test]
 fn parse_add_operation() {
     let source = "(+ 3 4 2 34.3)";
-    let lexer = lexer::Token::lexer(source);
+    let lexer = lexer::Token::tokenize(source);
     let tokens = lexer.collect();
     let ast = parse(tokens);
 
@@ -63,7 +62,7 @@ fn parse_add_operation() {
 #[test]
 fn parse_id_function() {
     let source = "(define (id x) x)";
-    let lexer = lexer::Token::lexer(source);
+    let lexer = lexer::Token::tokenize(source);
     let tokens = lexer.collect();
     let ast = parse(tokens);
 

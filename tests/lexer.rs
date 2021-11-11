@@ -1,11 +1,10 @@
 use frd_lisp::lexer;
 use frd_lisp::lexer::Token;
-use logos::Logos;
 
 #[test]
 fn left_parenthesis_test() {
     let source_code = "("; // should return (0, LParen, 1)
-    let lexer = lexer::Token::lexer(source_code);
+    let lexer = lexer::Token::tokenize(source_code);
     let tokens = lexer::get_token_info(lexer);
     assert_eq!(tokens, [(0, Token::LParen, 1)])
 }
@@ -13,7 +12,7 @@ fn left_parenthesis_test() {
 #[test]
 fn both_parenthesis_test() {
     let source_code = "()";
-    let lexer = lexer::Token::lexer(source_code);
+    let lexer = lexer::Token::tokenize(source_code);
     let tokens = lexer::get_token_info(lexer);
     assert_eq!(tokens, [(0, Token::LParen, 1), (1, Token::RParen, 2)])
 }
@@ -21,7 +20,7 @@ fn both_parenthesis_test() {
 #[test]
 fn parenthesis_and_numbers_test() {
     let source_code = "(1 2 3)";
-    let lexer = lexer::Token::lexer(source_code);
+    let lexer = lexer::Token::tokenize(source_code);
     let tokens = lexer::get_token_info(lexer);
     let expected = [
         (0, Token::LParen, 1),
@@ -41,7 +40,7 @@ fn parenthesis_and_numbers_test() {
 #[test]
 fn completed_string_test() {
     let source_code = "\"string\"";
-    let lexer = lexer::Token::lexer(source_code);
+    let lexer = lexer::Token::tokenize(source_code);
     let tokens = lexer::get_token_info(lexer);
     assert_eq!(tokens, [(0, Token::String("string"), 8)])
 }
@@ -49,7 +48,7 @@ fn completed_string_test() {
 #[test]
 fn another_completed_string_test() {
     let source_code = "\"another string\"";
-    let lexer = lexer::Token::lexer(source_code);
+    let lexer = lexer::Token::tokenize(source_code);
     let tokens = lexer::get_token_info(lexer);
     assert_eq!(tokens, [(0, Token::String("another string"), 16)])
 }
@@ -58,7 +57,7 @@ fn another_completed_string_test() {
 #[test]
 fn incomplete_string_test() {
     let source_code = "\"hello";
-    let lexer = lexer::Token::lexer(source_code);
+    let lexer = lexer::Token::tokenize(source_code);
     let tokens = lexer::get_token_info(lexer);
     assert_eq!(tokens, [(0, Token::Error, 6)])
 }
@@ -66,7 +65,7 @@ fn incomplete_string_test() {
 #[test]
 fn function_definition_test() {
     let source_code = "(define (id x) (x))";
-    let lexer = lexer::Token::lexer(source_code);
+    let lexer = lexer::Token::tokenize(source_code);
     let tokens = lexer::get_token_info(lexer);
     assert_eq!(
         tokens,
@@ -88,7 +87,7 @@ fn function_definition_test() {
 #[test]
 fn another_function_definition_test() {
     let source_code = "(define (k x) 12345)";
-    let lexer = lexer::Token::lexer(source_code);
+    let lexer = lexer::Token::tokenize(source_code);
     let tokens = lexer::get_token_info(lexer);
     assert_eq!(
         tokens,
@@ -108,7 +107,7 @@ fn another_function_definition_test() {
 #[test]
 fn equality_test() {
     let source_code = "(= 3 x)";
-    let lexer = lexer::Token::lexer(source_code);
+    let lexer = lexer::Token::tokenize(source_code);
     let tokens = lexer::get_token_info(lexer);
     assert_eq!(
         tokens,
@@ -125,7 +124,7 @@ fn equality_test() {
 #[test]
 fn number_test() {
     let source_code = "10.5";
-    let lexer = lexer::Token::lexer(source_code);
+    let lexer = lexer::Token::tokenize(source_code);
     let tokens = lexer::get_token_info(lexer);
     assert_eq!(tokens, [(0, Token::Num(10.5), 4)])
 }

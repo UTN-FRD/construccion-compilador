@@ -38,6 +38,12 @@ pub enum Token<'input> {
     Error,
 }
 
+impl<'a> Token<'a> {
+    pub fn tokenize(source_code: &'a str) -> Lexer<Token<'a>> {
+        Token::lexer(source_code)
+    }
+}
+
 pub fn get_token_info<'a>(mut lexer: Lexer<'a, Token<'a>>) -> Vec<(usize, Token<'a>, usize)> {
     let mut tokens = vec![];
 

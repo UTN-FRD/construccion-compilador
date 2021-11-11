@@ -7,7 +7,6 @@ use crate::env::Env;
 use crate::eval::eval_program;
 use crate::lexer::Token;
 use crate::parse;
-use logos::Logos;
 
 #[wasm_bindgen]
 pub struct LispVal(Vec<Rc<LispValue>>);
@@ -61,7 +60,7 @@ impl Interpreter {
             None => return Err(JsValue::from_str("Invalid value.")),
         };
 
-        let tokens = Token::lexer(&source).collect();
+        let tokens = Token::tokenize(&source).collect();
 
         let json_tokens = match serde_json::to_string(&tokens) {
             Ok(v) => v,
@@ -74,7 +73,6 @@ impl Interpreter {
             Ok(v) => v,
             Err(_) => return Err(JsValue::from_str("Parsing failed.")),
         };
-
         let json_ast = match serde_json::to_string(&ast) {
             Ok(v) => v,
             Err(_) => return Err(JsValue::from_str("AST's JSONification failed.")),
