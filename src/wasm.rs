@@ -5,8 +5,8 @@ use wasm_bindgen::prelude::*;
 
 use crate::env::Env;
 use crate::eval::eval_program;
-use crate::parse;
 use crate::lexer::Token;
+use crate::parse;
 use logos::Logos;
 
 #[wasm_bindgen]
@@ -61,9 +61,7 @@ impl Interpreter {
             None => return Err(JsValue::from_str("Invalid value.")),
         };
 
-        let tokens: Vec<Token> = Token::lexer(&source)
-            .into_iter()
-            .collect();
+        let tokens: Vec<Token> = Token::lexer(&source).into_iter().collect();
 
         let json_tokens = match serde_json::to_string(&tokens) {
             Ok(v) => v,

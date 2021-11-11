@@ -4,8 +4,8 @@
 // tests shouldn't live within the source file.
 
 use frd_lisp::ast;
-use frd_lisp::parse;
 use frd_lisp::lexer::Token;
+use frd_lisp::parse;
 
 #[test]
 fn addition_test() {

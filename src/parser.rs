@@ -1,5 +1,5 @@
-use crate::Expr;
 use crate::lexer;
+use crate::Expr;
 use lalrpop_util::lalrpop_mod;
 
 lalrpop_mod!(

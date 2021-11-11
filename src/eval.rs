@@ -6,12 +6,12 @@ use crate::LispError;
 //
 use crate::ast::Atom;
 use crate::env::Env;
+use crate::lexer;
 use crate::lisp_value::{Bool, Func, LispValue};
 use crate::{parse, Expr};
-use crate::lexer;
+use logos::Logos;
 use std::rc::Rc;
 use thiserror::Error;
-use logos::Logos;
 
 #[derive(Error, Debug)]
 pub enum EvalError {
