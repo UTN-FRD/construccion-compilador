@@ -6,8 +6,8 @@ use crate::LispError;
 //
 use crate::ast::Atom;
 use crate::env::Env;
+use crate::lexer;
 use crate::lisp_value::{Bool, Func, LispValue};
-use crate::tokenize;
 use crate::{parse, Expr};
 use std::rc::Rc;
 use thiserror::Error;
@@ -31,10 +31,10 @@ pub enum EvalError {
 // tree.
 pub fn eval(source: &str, env: Option<Rc<Env>>) -> Result<Vec<Rc<LispValue>>, LispError> {
     // Convert the input string into a stream of tokens and their start & end positions.
-    let tokens = tokenize(source);
+    let lex = lexer::Token::tokenize(source);
 
     // Discard start & end positions from the vector of tuples, leaving only `Token`s.
-    let tokens = tokens.into_iter().map(|(_, token, _)| token).collect();
+    let tokens = lex.collect::<Vec<lexer::Token>>();
     debug!("tokens: {:?}", tokens);
 
     // Convert the stream of tokens into an AST.
@@ -50,7 +50,7 @@ pub fn eval(source: &str, env: Option<Rc<Env>>) -> Result<Vec<Rc<LispValue>>, Li
     debug!("env {:?}", env);
 
     // Evaluate the AST.
-    match ast.clone() {
+    match ast {
         Ok(exprs) => match eval_program(&exprs, env) {
             Ok(value) => {
                 debug!("result {:?}", value);
@@ -58,7 +58,7 @@ pub fn eval(source: &str, env: Option<Rc<Env>>) -> Result<Vec<Rc<LispValue>>, Li
             }
             Err(eval_error) => Err(LispError::EvaluationError(eval_error)),
         },
-        Err(parse_error) => Err(LispError::ParserError(parse_error.clone())),
+        Err(parse_error) => Err(LispError::ParserError(parse_error)),
     }
 }
 
