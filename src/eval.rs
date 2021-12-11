@@ -194,22 +194,14 @@ pub fn eval_define_variable(
 pub fn eval_if(
     cond: &Expr,
     positive: &Expr,
-    negative: &Option<Expr>,
+    negative: &Expr,
     env: Rc<Env>,
 ) -> Result<Rc<LispValue>, EvalError> {
     let cond_value = eval_expression(cond, env.clone());
     if let Ok(LispValue::Bool(ref value)) = cond_value.as_deref() {
         match value {
             Bool::True => eval_expression(positive, env),
-            Bool::False => {
-                if negative.is_none() {
-                    return Ok(Rc::new(LispValue::Nil));
-                }
-                match negative.as_ref() {
-                    Some(bool_expr) => eval_expression(bool_expr, env),
-                    None => Err(EvalError::UnhandledError),
-                }
-            }
+            Bool::False => eval_expression(negative, env),
         }
     } else {
         Err(EvalError::UnhandledError) // TODO: should we coerce values to booleans?

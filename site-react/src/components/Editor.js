@@ -12,6 +12,7 @@ import Box from '@material-ui/core/Box';
 import Paper from '@material-ui/core/Paper';
 import firebase from '../firebase';
 import { AuthContext } from './Auth';
+import { generateTreeJSON } from '../parseAst';
 
 const useStyles = makeStyles((theme) => ({
   buttons: {
@@ -41,9 +42,12 @@ const Editor = ({ wasm }) => {
 
   const handleWasm = () => {
     try {
-      // use wasm `toString` function
-      const parsedValue = new wasm.LispVal(editorValue).toString();
-      setEditorValue(prevValue => [...prevValue].join('') + '\n' + parsedValue + '\n');
+        const interpreter = new wasm.Interpreter(editorValue);
+        const ast = JSON.parse(interpreter.getAST());
+        const treeJSON = generateTreeJSON(ast);
+        console.log(ast);
+        console.log("TreeJSON", JSON.stringify(treeJSON));
+        setEditorValue(prevValue => [...prevValue].join('') + '\n' + interpreter.getResult() + '\n');
     } catch (error) {
       console.log({ error });
       // refresh the page if an error is caught

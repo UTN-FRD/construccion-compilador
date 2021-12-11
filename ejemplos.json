@@ -1,0 +1,28 @@
+{
+    "name": "DefineFunction",
+    "children": [{
+            "name": "f"
+        },
+        {
+            "name": "arguments",
+            "children": [{
+                    "name": "x"
+                },
+                {
+                    "name": "y"
+                }
+            ]
+        },
+        {
+            "name": "body",
+            "children": [{
+                "name": "0",
+                "children": [
+                    { "name": "+" },
+                    { "name": "x" },
+                    { "name": "y" }
+                ]
+            }]
+        }
+    ]
+}

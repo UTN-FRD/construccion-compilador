@@ -40,7 +40,7 @@ pub Expr: Expr = {
         Expr::DefineVariable(var_name.to_string(), Box::new(var_value))
     },
 
-    "(" "if" <cond: Expr> <positive: Expr> <negative: Expr?> ")" => {
+    "(" "if" <cond: Expr> <positive: Expr> <negative: Expr> ")" => {
         Expr::If(Box::new(cond), Box::new(positive), Box::new(negative))
     },
 
