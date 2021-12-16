@@ -1,13 +1,13 @@
 // TODO: These tests use `eval::parse` which did both tokenizing and parsing.
 
 use frd_lisp::ast::Atom;
-use frd_lisp::{parse, tokenize, Expr};
+use frd_lisp::{lexer, parse, Expr};
 
 #[test]
 fn parse_eq_operation() {
     let source = "(= 3 x)";
-    let tokens = tokenize(source);
-    let tokens = tokens.into_iter().map(|(_, token, _)| token).collect();
+    let lexer = lexer::Token::tokenize(source);
+    let tokens = lexer.collect();
     let ast = parse(tokens);
 
     assert!(ast.is_ok());
@@ -24,8 +24,8 @@ fn parse_eq_operation() {
 #[test]
 fn parse_subtract_operation() {
     let source = "(- x 1)";
-    let tokens = tokenize(source);
-    let tokens = tokens.into_iter().map(|(_, token, _)| token).collect();
+    let lexer = lexer::Token::tokenize(source);
+    let tokens = lexer.collect();
     let ast = parse(tokens);
 
     assert!(ast.is_ok());
@@ -42,8 +42,8 @@ fn parse_subtract_operation() {
 #[test]
 fn parse_add_operation() {
     let source = "(+ 3 4 2 34.3)";
-    let tokens = tokenize(source);
-    let tokens = tokens.into_iter().map(|(_, token, _)| token).collect();
+    let lexer = lexer::Token::tokenize(source);
+    let tokens = lexer.collect();
     let ast = parse(tokens);
 
     assert!(ast.is_ok());
@@ -62,8 +62,8 @@ fn parse_add_operation() {
 #[test]
 fn parse_id_function() {
     let source = "(define (id x) x)";
-    let tokens = tokenize(source);
-    let tokens = tokens.into_iter().map(|(_, token, _)| token).collect();
+    let lexer = lexer::Token::tokenize(source);
+    let tokens = lexer.collect();
     let ast = parse(tokens);
 
     assert!(ast.is_ok());

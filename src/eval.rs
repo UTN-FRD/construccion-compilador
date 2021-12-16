@@ -6,8 +6,8 @@ use crate::LispError;
 //
 use crate::ast::Atom;
 use crate::env::Env;
+use crate::lexer;
 use crate::lisp_value::{Bool, Func, LispValue};
-use crate::tokenize;
 use crate::{parse, Expr};
 use std::rc::Rc;
 use thiserror::Error;
@@ -18,6 +18,8 @@ pub enum EvalError {
     SymbolNotFound { symbol: String },
     #[error("Unexpected Value in the function name position.")]
     UnexpectedFunctionValue,
+    #[error("Wrong argument")]
+    WrongArgument { expected: String, received: String },
     #[error("Unhandled Error.")]
     UnhandledError,
 }
@@ -29,10 +31,10 @@ pub enum EvalError {
 // tree.
 pub fn eval(source: &str, env: Option<Rc<Env>>) -> Result<Vec<Rc<LispValue>>, LispError> {
     // Convert the input string into a stream of tokens and their start & end positions.
-    let tokens = tokenize(source);
+    let lex = lexer::Token::tokenize(source);
 
     // Discard start & end positions from the vector of tuples, leaving only `Token`s.
-    let tokens = tokens.into_iter().map(|(_, token, _)| token).collect();
+    let tokens = lex.collect::<Vec<lexer::Token>>();
     debug!("tokens: {:?}", tokens);
 
     // Convert the stream of tokens into an AST.
@@ -48,7 +50,7 @@ pub fn eval(source: &str, env: Option<Rc<Env>>) -> Result<Vec<Rc<LispValue>>, Li
     debug!("env {:?}", env);
 
     // Evaluate the AST.
-    match ast.clone() {
+    match ast {
         Ok(exprs) => match eval_program(&exprs, env) {
             Ok(value) => {
                 debug!("result {:?}", value);
@@ -56,7 +58,7 @@ pub fn eval(source: &str, env: Option<Rc<Env>>) -> Result<Vec<Rc<LispValue>>, Li
             }
             Err(eval_error) => Err(LispError::EvaluationError(eval_error)),
         },
-        Err(parse_error) => Err(LispError::ParserError(parse_error.clone())),
+        Err(parse_error) => Err(LispError::ParserError(parse_error)),
     }
 }
 
@@ -115,7 +117,7 @@ pub fn eval_list(list: &[Expr], env: Rc<Env>) -> Result<Rc<LispValue>, EvalError
 
             match func.as_deref() {
                 Ok(LispValue::Intrinsic(ref func)) => {
-                    let res = func(&arg_values);
+                    let res = func(&arg_values)?;
                     debug!("eval_list END Intrinsice {:?}", res);
                     Ok(res)
                 }
@@ -159,7 +161,7 @@ pub fn eval_atom(atom: &Atom, env: Rc<Env>) -> Result<Rc<LispValue>, EvalError> 
         Atom::Id(id) => match id.as_str() {
             "true" => Ok(Rc::new(LispValue::Bool(Bool::True))),
             "false" => Ok(Rc::new(LispValue::Bool(Bool::False))),
-            _ => env.get(&id).ok_or(EvalError::SymbolNotFound {
+            _ => env.get(id).ok_or(EvalError::SymbolNotFound {
                 symbol: id.to_string(),
             }),
         },
@@ -192,22 +194,14 @@ pub fn eval_define_variable(
 pub fn eval_if(
     cond: &Expr,
     positive: &Expr,
-    negative: &Option<Expr>,
+    negative: &Expr,
     env: Rc<Env>,
 ) -> Result<Rc<LispValue>, EvalError> {
     let cond_value = eval_expression(cond, env.clone());
     if let Ok(LispValue::Bool(ref value)) = cond_value.as_deref() {
         match value {
             Bool::True => eval_expression(positive, env),
-            Bool::False => {
-                if negative.is_none() {
-                    return Ok(Rc::new(LispValue::Nil));
-                }
-                match negative.as_ref() {
-                    Some(bool_expr) => eval_expression(bool_expr, env),
-                    None => Err(EvalError::UnhandledError),
-                }
-            }
+            Bool::False => eval_expression(negative, env),
         }
     } else {
         Err(EvalError::UnhandledError) // TODO: should we coerce values to booleans?

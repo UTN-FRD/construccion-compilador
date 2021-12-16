@@ -13,6 +13,7 @@ import Paper from '@material-ui/core/Paper';
 import firebase from '../firebase';
 import { AuthContext } from './Auth';
 import TreeView from './TreeView/TreeView';
+import { generateTreeJSON } from '../parseAst';
 
 const useStyles = makeStyles((theme) => ({
   buttons: {
@@ -42,16 +43,12 @@ const Editor = ({ wasm }) => {
 
   const handleWasm = () => {
     try {
-      // List, Atom, DefineFn, DefineVariable, If
-
-      const mystr = '[{"DefineFunction":["f",["x"],[{"List":[{"Atom":{"Id":"+"}},{"Atom":{"Id":"x"}},{"Atom":{"Number":1.0}}]}]]}]'
-
-      // use wasm `toString` function
-      // const parsedValue = new wasm.LispVal(editorValue).toString();
-      const parsedTokens = new wasm.Interpreter(editorValue).getTokens();
-      const parsedAST = new wasm.Interpreter(editorValue).getAST();
-      console.log({ parsedTokens, parsedAST });
-      setEditorValue(prevValue => [...prevValue].join('') + '\n' + parsedTokens + '\n');
+        const interpreter = new wasm.Interpreter(editorValue);
+        const ast = JSON.parse(interpreter.getAST());
+        const treeJSON = generateTreeJSON(ast);
+        console.log(ast);
+        console.log("TreeJSON", JSON.stringify(treeJSON));
+        setEditorValue(prevValue => [...prevValue].join('') + '\n' + interpreter.getResult() + '\n');
     } catch (error) {
       console.log({ error });
       // refresh the page if an error is caught
