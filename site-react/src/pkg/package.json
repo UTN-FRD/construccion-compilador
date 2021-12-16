@@ -1,0 +1,15 @@
+{
+  "name": "frd_lisp",
+  "collaborators": [
+    "Fran Guijarro <franleplant@gmail.com>"
+  ],
+  "version": "0.1.0",
+  "files": [
+    "frd_lisp_bg.wasm",
+    "frd_lisp.js",
+    "frd_lisp.d.ts"
+  ],
+  "module": "frd_lisp.js",
+  "types": "frd_lisp.d.ts",
+  "sideEffects": false
+}
