@@ -38,6 +38,7 @@ const Editor = ({ wasm }) => {
   const classes = useStyles();
   const { currentUser } = useContext(AuthContext);
   const [editorValue, setEditorValue] = useState('');
+  const [tree, setTree] = useState('');
 
   const isEditorEmpty = editorValue === '';
 
@@ -47,7 +48,8 @@ const Editor = ({ wasm }) => {
         const ast = JSON.parse(interpreter.getAST());
         const treeJSON = generateTreeJSON(ast);
         console.log(ast);
-        console.log("TreeJSON", JSON.stringify(treeJSON));
+        // console.log("TreeJSON", JSON.stringify(treeJSON));
+        setTree(treeJSON);
         setEditorValue(prevValue => [...prevValue].join('') + '\n' + interpreter.getResult() + '\n');
     } catch (error) {
       console.log({ error });
@@ -119,9 +121,13 @@ const Editor = ({ wasm }) => {
         />
       </Paper>
       <hr />
-      <div style={{ width: '1000px', height: '1000px' }}>
-        <TreeView />
+      <div>
+        <pre>{JSON.stringify(tree, null, 2)}</pre>
       </div>
+      <hr/>
+      {tree && <div style={{ width: '1000px', height: '1000px' }}>
+        <TreeView key={JSON.stringify(tree)} data={tree} />
+      </div>}
     </Box>
   )
 }

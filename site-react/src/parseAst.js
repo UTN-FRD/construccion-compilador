@@ -3,6 +3,7 @@ function generateTreeJSON(ast) {
 }
 
 function parseExpr(node) {
+    console.log({ node });
     let nodeType = Object.keys(node)[0];
     let nodeValue = Object.values(node)[0];
     let result;
@@ -50,7 +51,9 @@ function generateIf(cond, positive, negative) {
 
 function parsedDefineVariable(nodeValues) {
     let name = nodeValues[0];
+    console.log({ name });
     let value = parseExpr(nodeValues[1]);
+    console.log({ value });
 
     return {
         "name": name,
@@ -80,6 +83,7 @@ function generateList(children) {
 }
 
 function parseDefineFunction(nodeValues) {
+    console.log({ nodeValues });
     let name = nodeValues[0];
     let args = nodeValues[1];
     let body = nodeValues[2].map((exprs) => parseExpr(exprs));
