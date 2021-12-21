@@ -24,7 +24,7 @@ tenga una serie de características y herramientas complementarias que faciliten
 - [rust clippy](https://github.com/rust-lang/rust-clippy)
 - [wasm-pack](https://rustwasm.github.io/docs/wasm-pack/)
 - [nodejs](https://nodejs.org/es/) 12.x or newer
-- git
+- [git](https://git-scm.com/)
 
 ### Running the interpreter
 
