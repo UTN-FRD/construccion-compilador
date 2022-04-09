@@ -1,6 +1,6 @@
+use crate::grammar;
 use crate::lexer;
 use crate::Expr;
-use crate::grammar;
 
 pub type ParserError<'a> = lalrpop_util::ParseError<(), lexer::Token<'a>, &'static str>;
 
