@@ -3,6 +3,8 @@ extern crate log;
 extern crate env_logger;
 
 #[allow(dead_code)]
+#[allow(unknown_lints)]
+#[allow(clippy::all)]
 mod grammar;
 pub mod lexer;
 mod parser;
