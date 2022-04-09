@@ -2,6 +2,7 @@
 extern crate log;
 extern crate env_logger;
 
+#[allow(dead_code)]
 mod grammar;
 pub mod lexer;
 mod parser;
