@@ -1,7 +1,14 @@
 [package]
 name = "frd_lisp"
 version = "0.1.0"
-authors = ["Fran Guijarro <franleplant@gmail.com>"]
+authors = [
+    "Adrian Bielsa <adrianbielsa1@gmail.com>",
+    "Fran Guijarro <franleplant@gmail.com>",
+    "Juan Bono <juanbono94@gmail.com>",
+    "Lucas Spigariol <lspigariol@gmail.com>",
+    "Nicolas Ulmete <nicoulmete1@gmail.com>",
+    "Sergio Viera <SergioViera@gmail.com>"
+]
 edition = "2021"
 build = "build.rs"
 
