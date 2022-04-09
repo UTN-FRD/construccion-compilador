@@ -2,7 +2,7 @@
 name = "frd_lisp"
 version = "0.1.0"
 authors = ["Fran Guijarro <franleplant@gmail.com>"]
-edition = "2018"
+edition = "2021"
 build = "build.rs"
 
 [package.metadata.wasm-pack.profile.release]
