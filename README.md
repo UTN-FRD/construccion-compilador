@@ -1,4 +1,4 @@
-# Intérprete funcional [![ci](https://github.com/UTN-FRD/construccion-compilador/actions/workflows/rust.yml/badge.svg?branch=master&event=status)](https://github.com/UTN-FRD/construccion-compilador/actions/workflows/rust.yml/badge.svg)
+# Intérprete funcional ![ci](https://github.com/UTN-FRD/construccion-compilador/actions/workflows/rust.yml/badge.svg)
 
 **Una implementación de Lisp en Rust** 
 
