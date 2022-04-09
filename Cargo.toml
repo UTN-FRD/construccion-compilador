@@ -2,7 +2,7 @@
 name = "frd_lisp"
 version = "0.1.0"
 authors = ["Fran Guijarro <franleplant@gmail.com>"]
-edition = "2018"
+edition = "2021"
 build = "build.rs"
 
 [package.metadata.wasm-pack.profile.release]
@@ -17,10 +17,10 @@ name = "frd_lisp"
 crate-type = ["rlib", "cdylib"]
 
 [build-dependencies]
-lalrpop = { version = "0.19.6", features = ["lexer"] }
+lalrpop = { version = "0.19.7", features = ["lexer"] }
 
 [dependencies]
-lalrpop-util = "0.19.6"
+lalrpop-util = { version = "0.19.7", features = ["lexer"] }
 regex = "1.5"
 log = "0.4.14"
 env_logger = "0.9.0"

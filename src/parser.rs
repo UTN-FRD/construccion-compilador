@@ -1,12 +1,6 @@
+use crate::grammar;
 use crate::lexer;
 use crate::Expr;
-use lalrpop_util::lalrpop_mod;
-
-lalrpop_mod!(
-    #[allow(clippy::all)]
-    #[allow(unused)]
-    grammar
-);
 
 pub type ParserError<'a> = lalrpop_util::ParseError<(), lexer::Token<'a>, &'static str>;
 
