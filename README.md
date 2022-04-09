@@ -1,4 +1,4 @@
-# Intérprete funcional [![ci](https://github.com/UTN-FRD/construccion-compilador/actions/workflows/rust.yml/badge.svg?branch=master&event=status)](https://github.com/UTN-FRD/construccion-compilador/actions/workflows/rust.yml)
+# Intérprete funcional [![ci](https://github.com/UTN-FRD/construccion-compilador/actions/workflows/rust.yml/badge.svg?branch=master&event=status)](https://github.com/UTN-FRD/construccion-compilador/actions/workflows/rust.yml/badge.svg)
 
 **Una implementación de Lisp en Rust** 
 
@@ -69,8 +69,7 @@ $ cargo test
 - PRs MUST have passing builds to be merged
 - be sure to auto format your code with `cargo fmt`
 - add tests for new features
-- be sure to use `cargo clippy` to detect common problems in your code (we cannot include this in the CI process because of an outstanding issue between clippy and lalrpop https://github.com/lalrpop/lalrpop/pull/384)
-
+- be sure to use `cargo clippy` to detect common problems in your code.
 
 ## Referencias
 
