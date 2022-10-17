@@ -7,6 +7,7 @@
   "files": [
     "frd_lisp_bg.wasm",
     "frd_lisp.js",
+    "frd_lisp_bg.js",
     "frd_lisp.d.ts"
   ],
   "module": "frd_lisp.js",

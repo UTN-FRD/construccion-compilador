@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Controlled as CodeMirror } from 'react-codemirror2';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
+import 'codemirror/theme/bespin.css';
 import { makeStyles } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
@@ -24,11 +25,18 @@ const useStyles = makeStyles((theme) => ({
   // TODO: change to a flex value
   editorWrapper: {
     height: '600px',
+    width: '100%',
+
+    justifyContent: 'space-evenly',
   },
   editor: {
     height: '100%',
+    width: '48%',
+
+    marginHorizontal: "3%",
     '& > .CodeMirror': {
       height: '100%',
+      width: '100%',
     },
   },
 }));
@@ -38,6 +46,7 @@ const Editor = ({ wasm }) => {
   const classes = useStyles();
   const { currentUser } = useContext(AuthContext);
   const [editorValue, setEditorValue] = useState('');
+  const [consoleValue, setConsoleValue] = useState('');
   const [tree, setTree] = useState('');
 
   const isEditorEmpty = editorValue === '';
@@ -60,6 +69,23 @@ const Editor = ({ wasm }) => {
 
   const resetEditorValue = () => {
     setEditorValue('');
+  }
+
+  const handleKeyDown = (editor, event) => {
+    switch (event.code) {
+      case "ArrowUp":
+      case "ArrowDown":
+        event.preventDefault();
+        break;
+      case "Enter":
+        const lastLine = editor.getLine(editor.lastLine())
+
+        if (lastLine !== "") {
+          setConsoleValue(editor.getValue() + '\n' + '1111')
+        }
+
+        alert([...editorValue].join(''))
+    }
   }
 
   const saveToFirebase = () => {
@@ -106,20 +132,36 @@ const Editor = ({ wasm }) => {
           Save
         </Button>
       </Box>
-      <Paper elevation={16} className={classes.editorWrapper}>
-        <CodeMirror
-          className={classes.editor}
-          value={editorValue}
-          options={{
-            mode: 'javascript',
-            theme: 'material',
-            lineNumbers: true
-          }}
-          onBeforeChange={(editor, data, value) => {
-            setEditorValue(value)
-          }}
-        />
-      </Paper>
+        <Box className={classes.editorWrapper} display="flex" flexDirection="row">
+          <CodeMirror
+            variant="contained" 
+            className={classes.editor}
+            value={editorValue} 
+            options={{
+              mode: 'javascript',
+              theme: 'material',
+              lineNumbers: true
+            }}
+            onBeforeChange={(editor, data, value) => {
+              setEditorValue(value)
+            }}
+          />
+          <CodeMirror
+            variant="contained" 
+            className={classes.editor}
+            value={consoleValue}
+            options={{
+              mode: 'javascript',
+              theme: 'bespin',
+              lineNumbers: true,
+              lineNumberFormatter: v => "$",
+            }}
+            onKeyDown={(editor, event) => handleKeyDown(editor, event)}
+            onBeforeChange={(editor, data, value) => {
+              setConsoleValue(value)
+            }}
+          />
+        </Box>
       <hr />
       <div>
         <pre>{JSON.stringify(tree, null, 2)}</pre>

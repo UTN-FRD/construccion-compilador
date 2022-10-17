@@ -26,6 +26,20 @@ tenga una serie de características y herramientas complementarias que faciliten
 - [nodejs](https://nodejs.org/es/) 12.x or newer
 - git
 
+### Install
+
+```
+Rust: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+```
+wasm-pack: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+```
+
+```
+nodejs: https://nodejs.org/es/
+```
+
 ### Running the interpreter
 
 ```
