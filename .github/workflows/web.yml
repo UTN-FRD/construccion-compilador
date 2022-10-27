@@ -57,12 +57,12 @@ jobs:
             echo PWD
             echo $(pwd)
             echo ls
-            echo $(ls)
+            echo $(ls site-react/)
         - name: Upload GitHub Pages artifact
           uses: actions/upload-pages-artifact@v1.0.4
           with:
             # Path of the directory containing the static assets.
-            path: site-react/build
+            path: site-react/build/
             # Duration after which artifact will expire in days.
             retention-days: 1
           env:
