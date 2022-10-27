@@ -55,7 +55,7 @@ jobs:
           uses: actions/upload-pages-artifact@v1.0.4
           with:
             # Path of the directory containing the static assets.
-            path: site-react/artifact.tar.gz
+            path: site-react
             # Duration after which artifact will expire in days.
             retention-days: 1
           env:
