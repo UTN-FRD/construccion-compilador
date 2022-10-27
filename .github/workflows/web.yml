@@ -43,7 +43,7 @@ jobs:
           echo Building the web page
           make build
           bash -c "cd site-react/ && npm run build"
-          bash -c "tar -zcvf artifact.tar.gz build"
+          bash -c "cd site-react/ && tar -zcvf artifact.tar.gz build"
         env:
          CI: false
 
