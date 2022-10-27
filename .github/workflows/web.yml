@@ -34,6 +34,8 @@ jobs:
           echo Building the web page
           make build
           bash -c "cd site-react/ && npm run build"
+        env:
+         CI: false
 
   deploy:
       runs-on: ubuntu-latest
@@ -46,5 +48,6 @@ jobs:
             path: site_react/build
             # Duration after which artifact will expire in days.
             retention-days: 1
-      
+          env:
+            CI: false
           
