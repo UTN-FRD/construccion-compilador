@@ -57,6 +57,7 @@ jobs:
             echo PWD
             echo $(pwd)
             echo ls
+            echo $(ls .)
             echo $(ls site-react/)
         - name: Upload GitHub Pages artifact
           uses: actions/upload-pages-artifact@v1.0.4
